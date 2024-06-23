@@ -1,9 +1,16 @@
-.button-container {
+.container {
   display: flex;
   justify-content: flex-end;
   width: 90%;
 }
-.custom-button {
+
+.input {
+  margin-right: 10px;
+  padding: 5px;
+  margin-bottom: 20px;
+}
+
+.button {
     background-color: green;
     color: white;
     border: none;
@@ -13,6 +20,6 @@
     margin-bottom: 20px;
   }
 
-  .custom-button:hover {
+  .button:hover {
     background-color: darkgreen;
   }
