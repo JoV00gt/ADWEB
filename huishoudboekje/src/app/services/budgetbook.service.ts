@@ -44,4 +44,9 @@ export class BudgetbookService {
       });
     });
   }
+
+  addBudgetBook(book: BudgetBook): void {
+    const object = Object.assign({}, book);
+    addDoc(collection(this.firestore, 'books'), object);
+  }
 }

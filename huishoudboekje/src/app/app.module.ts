@@ -3,18 +3,22 @@ import { BrowserModule, provideClientHydration } from '@angular/platform-browser
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { ReactiveFormsModule } from '@angular/forms';
 import { BudgetBookOverviewComponent } from './budget-book-overview/budget-book-overview.component';
 import { BudgetBookCreateComponent } from './budget-book-create/budget-book-create.component';
+import { BudgetBookEditComponent } from './budget-book-edit/budget-book-edit.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     BudgetBookOverviewComponent,
-    BudgetBookCreateComponent
+    BudgetBookCreateComponent,
+    BudgetBookEditComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ReactiveFormsModule
   ],
   providers: [
     provideClientHydration()

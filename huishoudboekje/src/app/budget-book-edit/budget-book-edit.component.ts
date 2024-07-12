@@ -1,31 +1,34 @@
 import { Component } from '@angular/core';
-import { BudgetbookService } from '../services/budgetbook.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { BudgetbookService } from '../services/budgetbook.service';
 import { BudgetBook } from '../models/budget-book.model';
 
 @Component({
-  selector: 'app-budget-book-create',
-  templateUrl: './budget-book-create.component.html',
-  styleUrl: './budget-book-create.component.css'
+  selector: 'app-budget-book-edit',
+  templateUrl: './budget-book-edit.component.html',
+  styleUrl: './budget-book-edit.component.css'
 })
-export class BudgetBookCreateComponent {
+export class BudgetBookEditComponent {
 
   budgetbookForm: FormGroup;
 
-  constructor(private service: BudgetbookService, private formBuilder: FormBuilder) {
+  budgetBook: BudgetBook | undefined;
 
+  constructor(private service: BudgetbookService, private formBuilder: FormBuilder) {
+    
     this.budgetbookForm = this.formBuilder.group({
       name: new FormControl('', [Validators.required]),
       description: new FormControl('', [Validators.maxLength(255)]),
-    })
-    
+      archived: new FormControl(false)
+    });
   }
 
-  onSubmit(): void{
+  onSubmit(): void {
     if(this.budgetbookForm.valid) {
       const value = this.budgetbookForm.value;
-      const book = new BudgetBook(value.name ?? '', value.description ?? '', false);
-      this.service.addBudgetBook(book);
+      
+      //Change the value of the current Book 
+      //access the service to update book
     } else {
       this.markAllAsTouched();
     }

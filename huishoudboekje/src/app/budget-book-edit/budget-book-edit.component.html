@@ -1,26 +1,35 @@
 <div class="container">
     <form [formGroup]="budgetbookForm" (ngSubmit)="onSubmit()">
       <div class="form-title">
-        <h3>Toevoegen van boekje</h3>
+        <h3>Aanpassen van het boekje</h3>
         <hr/>
       </div>
         <div class="form-row">
           <label for="name">Naam:</label>
-          <div class="input-field">
+          <div>
             <input [ngClass]="{'input-error': budgetbookForm.get('name')?.invalid && budgetbookForm.get('name')?.touched}" type="text" id="name" name="name" formControlName="name">
             <span class="error-message" *ngFor="let error of getFormControlErrors('name')">{{ error }}</span>
           </div>
         </div>
         <div class="form-row">
           <label for="description">Beschrijving:</label>
-          <div class="input-field">
+          <div>
             <input type="text" id="description" name="description" formControlName="description"
               [ngClass]="{'input-error': budgetbookForm.get('description')?.invalid && budgetbookForm.get('description')?.touched}">
-            <span class="error-message" *ngFor="let error of getFormControlErrors('description')">{{ error }}</span>
+              <span class="error-message" *ngFor="let error of getFormControlErrors('description')">{{ error }}</span>
+            </div>
           </div>
         </div>
         <div class="form-row">
-            <button type="submit">Huishoudboekje Toevoegen</button>
+            <label for="archived">Archived:</label>
+            <label class="switch">
+              <input type="checkbox" formControlName="archived">
+              <span class="slider round"></span>
+            </label>
+          </div>
+        <div class="form-row">
+            <button type="submit">Huishoudboekje Aanpassen</button>
         </div>
       </form>
 </div>
+

@@ -1,5 +1,5 @@
-* {
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+h1 {
+    text-align: center;
 }
 
 html, body {
@@ -9,11 +9,16 @@ html, body {
   align-items: center;
 }
 
-h1 {
-    text-align: center;
+.overview-component {
+  flex: 2;
+}
+
+.budgetbook-form-component {
+  flex: 1;
+  padding-right: 20px;
 }
 
 .container {
-    display: flex;
-    flex-direction: column;
-  }
+  display: flex;
+  padding: 20px;
+}
