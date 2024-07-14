@@ -24,7 +24,7 @@ export class BudgetBookCreateComponent {
   onSubmit(): void{
     if(this.budgetbookForm.valid) {
       const value = this.budgetbookForm.value;
-      const book = new BudgetBook(value.name ?? '', value.description ?? '', false);
+      const book = new BudgetBook(value.id ?? '', value.name ?? '', value.description ?? '', false); //TODO: default for value.id or something to autogenerate it idk find it out.
       this.service.addBudgetBook(book);
     } else {
       this.markAllAsTouched();

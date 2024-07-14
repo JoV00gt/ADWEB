@@ -11,7 +11,7 @@
             <tr *ngFor="let book of budgetbooks">
                 <td>{{book.name}}</td>
                 <td>{{book.description}}</td>
-                <td></td>
+                <td><button routerLink="../budgetbook/edit/{{book.id}}">Wijzig</button></td>
             </tr>
         </tbody>
     </table>

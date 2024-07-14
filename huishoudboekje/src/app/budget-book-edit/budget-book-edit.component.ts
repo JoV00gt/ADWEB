@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BudgetbookService } from '../services/budgetbook.service';
 import { BudgetBook } from '../models/budget-book.model';
+import { Observable, tap } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-budget-book-edit',
@@ -12,15 +14,27 @@ export class BudgetBookEditComponent {
 
   budgetbookForm: FormGroup;
 
-  budgetBook: BudgetBook | undefined;
+  budgetbook: Observable<BudgetBook | undefined>;
 
-  constructor(private service: BudgetbookService, private formBuilder: FormBuilder) {
-    
+  constructor(private service: BudgetbookService,  private route: ActivatedRoute, private formBuilder: FormBuilder) {
     this.budgetbookForm = this.formBuilder.group({
       name: new FormControl('', [Validators.required]),
       description: new FormControl('', [Validators.maxLength(255)]),
       archived: new FormControl(false)
     });
+
+    const selectedId = this.route.snapshot.paramMap.get('id') ?? "";
+    this.budgetbook = this.service.getBudgetBook(selectedId).pipe(
+      tap((book: BudgetBook | undefined) => {
+        if (book) {
+          this.budgetbookForm.patchValue({ //TODO: Maybe not best solution check for other solutions to get values into the form
+            name: book.name,
+            description: book.description,
+            archived: book.archived
+          });
+        }
+      })
+    );
   }
 
   onSubmit(): void {

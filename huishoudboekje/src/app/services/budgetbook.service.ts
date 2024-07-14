@@ -4,6 +4,7 @@ import { Observable, Subscriber } from 'rxjs';
 
 import { initializeApp } from "firebase/app";
 import { Firestore, getFirestore, onSnapshot, collection, doc, addDoc, deleteDoc } from "firebase/firestore";
+import { subscribe } from 'diagnostics_channel';
 
 @Injectable({
   providedIn: 'root'
@@ -48,5 +49,21 @@ export class BudgetbookService {
   addBudgetBook(book: BudgetBook): void {
     const object = Object.assign({}, book);
     addDoc(collection(this.firestore, 'books'), object);
+  }
+
+  getBudgetBook(id: string): Observable<BudgetBook | undefined> {
+    return new Observable((subscriber: Subscriber<any>) => {
+      if (id == '') {
+        subscriber.next(null);
+      } else {
+        onSnapshot(doc(this.firestore, 'books', id), (doc) => {
+          let book = doc.data() ?? null;
+          if (book) {
+            book['id'] = doc.id;
+          }
+          subscriber.next(book);
+        });
+      }
+    })
   }
 }
