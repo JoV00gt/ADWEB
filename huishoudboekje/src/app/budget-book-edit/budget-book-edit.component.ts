@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { BudgetbookService } from '../services/budgetbook.service';
 import { BudgetBook } from '../models/budget-book.model';
 import { Observable, tap } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-budget-book-edit',
@@ -14,35 +14,47 @@ export class BudgetBookEditComponent {
 
   budgetbookForm: FormGroup;
 
-  budgetbook: Observable<BudgetBook | undefined>;
+  budgetbookId: string = '';
 
-  constructor(private service: BudgetbookService,  private route: ActivatedRoute, private formBuilder: FormBuilder) {
+  budgetbook$: Observable<BudgetBook | undefined>;
+
+  constructor(private service: BudgetbookService,  private route: ActivatedRoute, private formBuilder: FormBuilder, private router: Router) {
+    const selectedId = this.route.snapshot.paramMap.get('id') ?? "";
+    this.budgetbook$ = this.service.getBudgetBook(selectedId);
+
     this.budgetbookForm = this.formBuilder.group({
       name: new FormControl('', [Validators.required]),
       description: new FormControl('', [Validators.maxLength(255)]),
       archived: new FormControl(false)
     });
+  }
 
-    const selectedId = this.route.snapshot.paramMap.get('id') ?? "";
-    this.budgetbook = this.service.getBudgetBook(selectedId).pipe(
-      tap((book: BudgetBook | undefined) => {
-        if (book) {
-          this.budgetbookForm.patchValue({ //TODO: Maybe not best solution check for other solutions to get values into the form
-            name: book.name,
-            description: book.description,
-            archived: book.archived
-          });
-        }
-      })
-    );
+  ngOnInit(): void {
+    this.budgetbook$.subscribe((book: BudgetBook | undefined) => {
+      if (book) {
+        this.budgetbookId = book.id;
+        this.budgetbookForm.patchValue({
+          name: book.name,
+          description: book.description,
+          archived: book.archived
+        });
+      }
+    });
   }
 
   onSubmit(): void {
     if(this.budgetbookForm.valid) {
-      const value = this.budgetbookForm.value;
-      
-      //Change the value of the current Book 
-      //access the service to update book
+
+      const updatedValues = this.budgetbookForm.value;
+      const updatedBook: BudgetBook = {
+        id: this.budgetbookId,
+        name: updatedValues.name,
+        description: updatedValues.description,
+        archived: updatedValues.archived
+      };
+
+      this.service.updateBudgetBook(updatedBook);
+      this.router.navigateByUrl('budgetbook');
     } else {
       this.markAllAsTouched();
     }

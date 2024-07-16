@@ -10,8 +10,8 @@ import { BudgetBook } from '../models/budget-book.model';
 
 export class BudgetBookOverviewComponent {
 
-
-  budgetbooks: BudgetBook[] = []
+  budgetbooks: BudgetBook[] = [];
+  term: string = '';
 
   constructor(private service: BudgetbookService) {
     service.getBudgetBooks().subscribe(books => {

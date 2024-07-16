@@ -3,8 +3,7 @@ import { BudgetBook } from '../models/budget-book.model';
 import { Observable, Subscriber } from 'rxjs';
 
 import { initializeApp } from "firebase/app";
-import { Firestore, getFirestore, onSnapshot, collection, doc, addDoc, deleteDoc } from "firebase/firestore";
-import { subscribe } from 'diagnostics_channel';
+import { Firestore, getFirestore, onSnapshot, collection, doc, addDoc, deleteDoc, updateDoc } from "firebase/firestore";
 
 @Injectable({
   providedIn: 'root'
@@ -49,6 +48,11 @@ export class BudgetbookService {
   addBudgetBook(book: BudgetBook): void {
     const object = Object.assign({}, book);
     addDoc(collection(this.firestore, 'books'), object);
+  }
+
+  updateBudgetBook(book: BudgetBook): void {
+    const { id, ...object } = Object.assign({}, book);
+    updateDoc(doc(this.firestore, "books", book.id), object);
   }
 
   getBudgetBook(id: string): Observable<BudgetBook | undefined> {

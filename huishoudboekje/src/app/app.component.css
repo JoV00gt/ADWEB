@@ -9,16 +9,6 @@ html, body {
   align-items: center;
 }
 
-.overview-component {
-  flex: 2;
-}
-
-.budgetbook-form-component {
-  flex: 1;
-  padding-right: 20px;
-}
-
 .container {
-  display: flex;
   padding: 20px;
 }

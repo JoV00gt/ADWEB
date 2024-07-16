@@ -1,4 +1,8 @@
 <div class="container">
+    <div class="action-tab">
+        <button class="button-primary" routerLink="../budgetbook/create">Boekje toevoegen</button>
+        <input class="search" [(ngModel)]="term" type="text" name="search" placeholder="Zoeken op naam of beschrijving">
+    </div>
     <table>
         <thead>
             <tr>
@@ -8,10 +12,10 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let book of budgetbooks">
+            <tr *ngFor="let book of budgetbooks | search: term">
                 <td>{{book.name}}</td>
                 <td>{{book.description}}</td>
-                <td><button routerLink="../budgetbook/edit/{{book.id}}">Wijzig</button></td>
+                <td><button class="button-secondary" routerLink="../budgetbook/edit/{{book.id}}">Wijzig</button></td>
             </tr>
         </tbody>
     </table>

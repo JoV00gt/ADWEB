@@ -1,5 +1,3 @@
-
-  
   table {
     border-collapse: collapse;
     width: 100%;
@@ -23,3 +21,43 @@
   tr:hover {
     background-color: #f1f1f1;
   }
+
+.action-tab {
+  display: flex;
+  margin-bottom: 20px;
+  flex-flow: row-reverse;
+}
+
+.button-primary {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  color: white;
+  background-color: #4CAF50; /* Default button color */
+}
+
+.button-primary:hover {
+  background-color: #046116;
+}
+
+.button-secondary {
+  background-color: navy;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+.button-secondary:hover {
+  background-color: darkblue;
+}
+
+.search {
+  padding: 5px;
+  margin-right: 10px;
+  width: 20%;
+}

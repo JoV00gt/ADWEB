@@ -1,13 +1,14 @@
 <div class="container">
   <form [formGroup]="budgetbookForm" (ngSubmit)="onSubmit()">
     <div class="form-title">
-      <h3>Aanpassen van het boekje</h3>
+      <h2>Aanpassen van het boekje</h2>
       <hr/>
     </div>
     <div class="form-row">
       <label for="name">Naam:</label>
       <div class="input-field">
-        <input [ngClass]="{'input-error': budgetbookForm.get('name')?.invalid && budgetbookForm.get('name')?.touched}" type="text" id="name" name="name" formControlName="name">
+        <input [ngClass]="{'input-error': budgetbookForm.get('name')?.invalid && budgetbookForm.get('name')?.touched}" 
+          type="text" id="name" name="name" formControlName="name">
         <span class="error-message" *ngFor="let error of getFormControlErrors('name')">{{ error }}</span>
       </div>
     </div>

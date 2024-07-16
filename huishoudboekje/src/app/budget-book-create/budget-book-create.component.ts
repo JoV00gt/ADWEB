@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { BudgetbookService } from '../services/budgetbook.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BudgetBook } from '../models/budget-book.model';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-budget-book-create',
@@ -12,8 +14,7 @@ export class BudgetBookCreateComponent {
 
   budgetbookForm: FormGroup;
 
-  constructor(private service: BudgetbookService, private formBuilder: FormBuilder) {
-
+  constructor(private service: BudgetbookService, private formBuilder: FormBuilder, private router: Router) {
     this.budgetbookForm = this.formBuilder.group({
       name: new FormControl('', [Validators.required]),
       description: new FormControl('', [Validators.maxLength(255)]),
@@ -24,8 +25,9 @@ export class BudgetBookCreateComponent {
   onSubmit(): void{
     if(this.budgetbookForm.valid) {
       const value = this.budgetbookForm.value;
-      const book = new BudgetBook(value.id ?? '', value.name ?? '', value.description ?? '', false); //TODO: default for value.id or something to autogenerate it idk find it out.
+      const book = new BudgetBook('', value.name ?? '', value.description ?? '', false);
       this.service.addBudgetBook(book);
+      this.router.navigateByUrl('budgetbook');
     } else {
       this.markAllAsTouched();
     }
