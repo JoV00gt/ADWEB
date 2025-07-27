@@ -1,27 +1,36 @@
 'use client';
 
+import { useAuth } from './lib/context/auth-context';
+import LogoutButton from '@/app/components/auth/logout-button';
 import Link from 'next/link';
 
 export default function HomePage() {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return <div className="text-center mt-10">Laden...</div>;
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100 px-4">
-      <div className="text-center space-y-6">
-        <h1 className="text-4xl font-bold text-gray-800">Welkom bij het Huishoudboekje</h1>
-        <div className="flex justify-center gap-4">
-          <Link
-            href="/"
-            className="px-6 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
-          >
-            Home
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
+      <h1 className="text-3xl font-bold mb-6">Welkom bij de Huishoudboekjes App</h1>
+
+      {!user ? (
+        <Link href="/auth/login">
+          <button className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition">
+            Inloggen
+          </button>
+        </Link>
+      ) : (
+        <div className="flex gap-4">
+          <Link href="/dashboard">
+            <button className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition">
+              Naar dashboard
+            </button>
           </Link>
-          <Link
-            href="/dashboard"
-            className="px-6 py-2 rounded-lg bg-gray-200 text-gray-800 hover:bg-gray-300 transition"
-          >
-            Dashboard
-          </Link>
+          <LogoutButton />
         </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -1,21 +1,6 @@
-'use client';
+import type { BudgetBook } from '../lib/definitions'; 
 
-import { useEffect, useState } from 'react';
-import { type BudgetBook } from '../lib/definitions'; 
-import { listenBudgetBooks } from '../services/budgetBookService';
-
-export function BudgetBookTable() {
-  const [budgetBooks, setBudgetBooks] = useState<BudgetBook[]>([]);
-
-  useEffect(() => {
-    const unsubscribe = listenBudgetBooks((data) => {
-      setBudgetBooks(data);
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-
+export function BudgetBookTable({ budgetBooks }: { budgetBooks: BudgetBook[] }) {
   return (
   <div>
     <table className="min-w-full bg-white shadow-md rounded-xl border-separate border-spacing-y-2">
