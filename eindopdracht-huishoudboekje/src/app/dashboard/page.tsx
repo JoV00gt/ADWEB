@@ -4,7 +4,8 @@ import { BudgetBookTable } from '../components/budgetbook-table';
 import { Pagination } from '../components/pagination';
 import { useEffect, useState } from 'react';
 import type { BudgetBook } from '../lib/definitions';
-import { listenBudgetBooks } from '../services/budgetBookService';
+import { listenBudgetBooks } from '../lib/listeners/budgetbook-listener';
+import Link from 'next/link';
 
 
 export default function DashboardPage() {
@@ -30,6 +31,12 @@ export default function DashboardPage() {
   return (
     <div className="overflow-x-auto flex items-center justify-center min-h-screen">
       <div className="max-w-4xl w-full p-4 bg-white shadow rounded-lg">
+        <Link
+          href="/dashboard/create"
+          className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+        >
+          Nieuw huishoudboekje
+        </Link>
         <h1 className="text-2xl font-semibold mb-4 text-center">Huishoudboekjes</h1>
         <BudgetBookTable budgetBooks={paginatedBooks} />
         <Pagination

@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { logout } from '@/app/services/authService';
+import { logout } from '@/app/lib/actions/auth-actions';
 
 export default function LogoutButton() {
   const router = useRouter();

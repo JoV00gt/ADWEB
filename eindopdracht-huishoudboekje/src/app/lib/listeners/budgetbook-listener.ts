@@ -1,5 +1,5 @@
-import { collection, onSnapshot } from 'firebase/firestore';
-import { type BudgetBook } from '../lib/definitions';
+import { collection, onSnapshot} from 'firebase/firestore';
+import type { BudgetBook } from '../definitions';
 import { db } from '../firebase';
 
 export function listenBudgetBooks(listener: (data: BudgetBook[]) => void) {

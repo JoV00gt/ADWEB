@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import AuthGuard from "./components/auth/auth-guard";
 import { AuthProvider } from "./lib/context/auth-context";
 import "./globals.css";
 
