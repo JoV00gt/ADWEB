@@ -4,7 +4,7 @@ import { useState } from "react";
 import { createBudgetBook } from "../lib/actions/budgetbook-actions";
 
 export default function BudgetBookForm() {
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
 
   const handleSubmit = async (formData: FormData) => {
     try {
