@@ -2,14 +2,16 @@
 
 import { useState } from "react";
 import { createBudgetBook } from "../lib/actions/budgetbook-actions";
+import { getUserId } from "../lib/actions/auth-actions";
 
 export default function BudgetBookForm() {
   const [error, setError] = useState(null);
 
   const handleSubmit = async (formData: FormData) => {
+    const userId =  await getUserId();
     try {
       setError(null);
-      await createBudgetBook(formData);
+      await createBudgetBook(formData, userId);
     } catch (err: any) {
       setError(err.message || 'Er ging iets mis.');
     }

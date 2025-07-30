@@ -2,8 +2,8 @@ import { collection, onSnapshot, query, Unsubscribe, where} from 'firebase/fires
 import type { BudgetBook } from '../definitions';
 import { db } from '../firebase';
 
-export function listenBudgetBooks(listener: any): Unsubscribe {
-  const q = query(collection(db, 'budgetBooks'), where('archived', '==', false));
+export function listenBudgetBooks(listener: any, userId: any): Unsubscribe {
+  const q = query(collection(db, 'budgetBooks'), where('archived', '==', false), where('ownerId', '==', userId),);
 
   const unsubscribe = onSnapshot(q, (snapshot) => {
     const books: BudgetBook[] = snapshot.docs.map((doc) => ({
@@ -16,8 +16,8 @@ export function listenBudgetBooks(listener: any): Unsubscribe {
   return unsubscribe;
 }
 
-export function listenArchivedBudgetBooks(listener: any): Unsubscribe {
-  const q = query(collection(db, 'budgetBooks'), where('archived', '==', true));
+export function listenArchivedBudgetBooks(listener: any, userId: any): Unsubscribe {
+  const q = query(collection(db, 'budgetBooks'), where('archived', '==', true), where('ownerId', '==', userId),);
 
   const unsubscribe = onSnapshot(q, (snapshot) => {
     const books: BudgetBook[] = snapshot.docs.map((doc) => ({

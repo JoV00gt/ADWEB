@@ -5,6 +5,7 @@ import { Pagination } from '../components/pagination';
 import { useEffect, useState } from 'react';
 import type { BudgetBook } from '../lib/definitions';
 import { listenArchivedBudgetBooks } from '../lib/listeners/budgetbook-listener';
+import { getUserId } from '../lib/actions/auth-actions';
 
 
 export default function AcrhivePage() {
@@ -13,11 +14,25 @@ export default function AcrhivePage() {
   const ITEMS_PER_PAGE = 5;
 
   useEffect(() => {
-    const unsubscribe = listenArchivedBudgetBooks((books: BudgetBook[]) => {
-      setBudgetBooks(books);
-    });
+    let unsubscribe: (() => void) | null = null;
 
-    return () => unsubscribe();
+    async function initListener() {
+      const userId = await getUserId();
+
+      if (!userId) {
+        return;
+      }
+
+      unsubscribe = listenArchivedBudgetBooks((books: BudgetBook[]) => {
+        setBudgetBooks(books);
+      }, userId);
+    }
+
+    initListener();
+
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
   }, []);
 
   const totalPages = Math.ceil(budgetBooks.length / ITEMS_PER_PAGE);

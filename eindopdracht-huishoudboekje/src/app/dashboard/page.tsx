@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import type { BudgetBook } from '../lib/definitions';
 import { listenBudgetBooks } from '../lib/listeners/budgetbook-listener';
 import Link from 'next/link';
+import { getUserId } from '../lib/actions/auth-actions';
 
 
 export default function DashboardPage() {
@@ -14,11 +15,25 @@ export default function DashboardPage() {
   const ITEMS_PER_PAGE = 5;
 
   useEffect(() => {
-    const unsubscribe = listenBudgetBooks((books: BudgetBook[]) => {
-      setBudgetBooks(books);
-    });
+    let unsubscribe: (() => void) | null = null;
 
-    return () => unsubscribe();
+    async function initListener() {
+      const userId = await getUserId();
+
+      if (!userId) {
+        return;
+      }
+
+      unsubscribe = listenBudgetBooks((books: BudgetBook[]) => {
+        setBudgetBooks(books);
+      }, userId);
+    }
+
+    initListener();
+
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
   }, []);
 
   const totalPages = Math.ceil(budgetBooks.length / ITEMS_PER_PAGE);

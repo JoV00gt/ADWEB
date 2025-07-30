@@ -4,7 +4,7 @@ import { addDoc, collection, Timestamp, doc, getDoc, updateDoc } from 'firebase/
 import { db } from '../firebase';
 import { redirect } from 'next/navigation';
 
-export async function createBudgetBook(formData: FormData) {
+export async function createBudgetBook(formData: FormData, userId: any) {
   const name = formData.get('name')?.toString();
   const description = formData.get('description')?.toString() || '';
 
@@ -12,9 +12,15 @@ export async function createBudgetBook(formData: FormData) {
     throw new Error('Naam is verplicht');
   }
 
+  if(!userId) {
+     throw new Error('Gebruiker is niet ingelogd');
+  }
+
   await addDoc(collection(db, 'budgetBooks'), {
     name,
     description,
+    archived: false,
+    ownerId: userId,
     createdAt: Timestamp.now(),
   });
 
@@ -55,6 +61,8 @@ export async function getBudgetBookById(id: string) {
   return {
     id: docSnap.id,
     name: data.name,
+    ownerId: data.ownerId,
+    archived: data.archived,
     description: data.description,
   };
 }
