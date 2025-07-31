@@ -11,6 +11,7 @@ import { getUserId } from '../lib/actions/auth-actions';
 export default function AcrhivePage() {
   const [budgetBooks, setBudgetBooks] = useState<BudgetBook[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [userId, setUserId] = useState<string | null>(null);
   const ITEMS_PER_PAGE = 5;
 
   useEffect(() => {
@@ -22,6 +23,7 @@ export default function AcrhivePage() {
       if (!userId) {
         return;
       }
+      setUserId(userId);
 
       unsubscribe = listenArchivedBudgetBooks((books: BudgetBook[]) => {
         setBudgetBooks(books);
@@ -48,7 +50,7 @@ export default function AcrhivePage() {
     <div className="flex items-center justify-between mb-4">
       <h1 className="text-2xl font-semibold">Huishoudboekjes Archief</h1>
     </div>
-    <BudgetBookTable budgetBooks={paginatedBooks} isArchived={true} />
+    <BudgetBookTable currentUser={userId} budgetBooks={paginatedBooks} isArchived={true} />
     <Pagination
       currentPage={currentPage}
       totalPages={totalPages}

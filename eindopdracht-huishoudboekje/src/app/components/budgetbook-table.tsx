@@ -2,7 +2,7 @@ import Link from 'next/link';
 import type { BudgetBook } from '../lib/definitions';
 import { archiveBudgetBook } from '../lib/actions/budgetbook-actions';
 
-export function BudgetBookTable({ budgetBooks, isArchived }: { budgetBooks: BudgetBook[], isArchived: boolean }) {
+export function BudgetBookTable({ budgetBooks, isArchived, currentUser }: { budgetBooks: BudgetBook[], isArchived: boolean, currentUser: any }) {
   return (
     <div>
       <table className="min-w-full bg-white shadow-md rounded-xl border-separate border-spacing-y-2">
@@ -22,7 +22,8 @@ export function BudgetBookTable({ budgetBooks, isArchived }: { budgetBooks: Budg
               <td className="px-6 py-4 text-gray-800">{book.name}</td>
               <td className="px-6 py-4 text-gray-600">{book.description}</td>
               <td className="px-6 py-4 text-blue-600">
-  <div className="flex items-center space-x-4">
+  {book.ownerId === currentUser && (
+ <div className="flex items-center space-x-4">
     {!isArchived && (
       <Link
         href={`/dashboard/${book.id}/edit`}
@@ -38,6 +39,8 @@ export function BudgetBookTable({ budgetBooks, isArchived }: { budgetBooks: Budg
       {book.archived ? 'Dearchiveren' : 'Archiveren'}
     </button>
   </div>
+  )}
+ 
 </td>
 
             </tr>

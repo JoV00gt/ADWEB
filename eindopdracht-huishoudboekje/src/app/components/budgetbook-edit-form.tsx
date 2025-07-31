@@ -1,13 +1,51 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { updateBudgetBook } from '../lib/actions/budgetbook-actions';
-import type { BudgetBook } from '../lib/definitions';
+import { getUserId } from '../lib/actions/auth-actions';
+import { listenToUsers } from '../lib/listeners/user-listener';
+import type { BudgetBook, User } from '../lib/definitions';
+import MultiSelect from './select';
 
 export default function EditBudgetBookForm({ book }: { book: BudgetBook }) {
-  const updateAction = updateBudgetBook.bind(null, book.id);
+  const [users, setUsers] = useState<User[]>([]);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [selectedUserIds, setSelectedUserIds] = useState<string[]>(book.participants || []);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchUserId() {
+      const id = await getUserId();
+      setCurrentUserId(id);
+    }
+    fetchUserId();
+
+    const unsubscribe = listenToUsers(setUsers);
+    return () => unsubscribe();
+  }, []);
+
+  const filteredUsers = currentUserId 
+    ? users.filter(user => user.id !== currentUserId) 
+    : users;
+
+  const handleSubmit = async (formData: FormData) => {
+    try {
+      setError(null);
+      selectedUserIds.forEach(id => formData.append('participantIds', id));
+      await updateBudgetBook(book.id, formData);
+    } catch (err: any) {
+      setError(err.message || 'Er ging iets mis.');
+    }
+  };
 
   return (
-    <form action={updateAction} className="space-y-4">
+    <form onSubmit={(e) => {
+      e.preventDefault();
+      const formData = new FormData(e.currentTarget);
+      handleSubmit(formData);
+    }} className="space-y-4 max-w-md mx-auto">
+      {error && <p className="text-red-600">{error}</p>}
+
       <div>
         <label htmlFor="name" className="block font-medium">Naam</label>
         <input
@@ -27,6 +65,16 @@ export default function EditBudgetBookForm({ book }: { book: BudgetBook }) {
           id="description"
           defaultValue={book.description}
           className="w-full border rounded p-2"
+        />
+      </div>
+
+      <div>
+        <MultiSelect
+          options={filteredUsers.map(u => ({ label: u.email, value: u.id }))}
+          selectedValues={selectedUserIds}
+          onChange={setSelectedUserIds}
+          name="participantIds"
+          label="Deelnemers"
         />
       </div>
 

@@ -12,6 +12,8 @@ import { getUserId } from '../lib/actions/auth-actions';
 export default function DashboardPage() {
   const [budgetBooks, setBudgetBooks] = useState<BudgetBook[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [userId, setUserId] = useState<string | null>(null);
+
   const ITEMS_PER_PAGE = 5;
 
   useEffect(() => {
@@ -23,6 +25,7 @@ export default function DashboardPage() {
       if (!userId) {
         return;
       }
+      setUserId(userId);
 
       unsubscribe = listenBudgetBooks((books: BudgetBook[]) => {
         setBudgetBooks(books);
@@ -55,7 +58,7 @@ export default function DashboardPage() {
         Nieuw huishoudboekje
       </Link>
     </div>
-    <BudgetBookTable budgetBooks={paginatedBooks} isArchived={false} />
+    <BudgetBookTable currentUser={userId} budgetBooks={paginatedBooks} isArchived={false} />
     <Pagination
       currentPage={currentPage}
       totalPages={totalPages}

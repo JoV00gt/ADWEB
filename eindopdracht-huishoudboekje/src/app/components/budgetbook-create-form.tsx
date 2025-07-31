@@ -1,17 +1,35 @@
 'use client'
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createBudgetBook } from "../lib/actions/budgetbook-actions";
 import { getUserId } from "../lib/actions/auth-actions";
+import { User } from "../lib/definitions";
+import { listenToUsers } from "../lib/listeners/user-listener";
+import MultiSelect from "./select";
 
 export default function BudgetBookForm() {
   const [error, setError] = useState(null);
+  const [users, setUsers] = useState<User[]>([]);
+  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchUserId() {
+      const id = await getUserId();
+      setCurrentUserId(id);
+    }
+    fetchUserId();
+  
+  const unsubscribe = listenToUsers(setUsers);
+  return () => unsubscribe();
+  }, []);
+
+  const filteredUsers = currentUserId ? users.filter(u => u.id !== currentUserId) : users;
 
   const handleSubmit = async (formData: FormData) => {
-    const userId =  await getUserId();
     try {
       setError(null);
-      await createBudgetBook(formData, userId);
+      await createBudgetBook(formData, currentUserId);
     } catch (err: any) {
       setError(err.message || 'Er ging iets mis.');
     }
@@ -39,6 +57,16 @@ export default function BudgetBookForm() {
           name="description"
           className="w-full border px-3 py-2 rounded"
         />
+      </div>
+
+      <div>
+      <MultiSelect
+        options={filteredUsers.map((u) => ({ label: u.email, value: u.id }))}
+        selectedValues={selectedUserIds}
+        onChange={setSelectedUserIds}
+        name="participantIds"
+        label="Deelnemers"
+      />
       </div>
 
       <button

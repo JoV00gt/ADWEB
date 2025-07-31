@@ -7,13 +7,14 @@ import { redirect } from 'next/navigation';
 export async function createBudgetBook(formData: FormData, userId: any) {
   const name = formData.get('name')?.toString();
   const description = formData.get('description')?.toString() || '';
-
-  if (!name || name.trim() == '') {
+  const participantIds = formData.getAll('participantIds').map(id => id.toString());
+  
+  if (!name || name.trim() === '') {
     throw new Error('Naam is verplicht');
   }
 
-  if(!userId) {
-     throw new Error('Gebruiker is niet ingelogd');
+  if (!userId) {
+    throw new Error('Gebruiker is niet ingelogd');
   }
 
   await addDoc(collection(db, 'budgetBooks'), {
@@ -21,27 +22,34 @@ export async function createBudgetBook(formData: FormData, userId: any) {
     description,
     archived: false,
     ownerId: userId,
+    participants: participantIds,
     createdAt: Timestamp.now(),
   });
 
   redirect('/dashboard');
 }
 
+
 export async function updateBudgetBook(id: string, formData: FormData) {
   const name = formData.get('name')?.toString();
   const description = formData.get('description')?.toString() || '';
+  const participantIds = Array.from(
+    new Set(formData.getAll('participantIds').map(id => id.toString()))
+  );
 
-  if (!name || name.trim() == '') {
+  if (!name || name.trim() === '') {
     throw new Error('Naam is verplicht');
   }
 
   await updateDoc(doc(db, 'budgetBooks', id), {
     name,
     description,
+    participants: participantIds
   });
 
   redirect('/dashboard');
 }
+
 
 export async function archiveBudgetBook(id: string, archived: boolean) {
   const book = doc(db, 'budgetBooks', id);
@@ -64,5 +72,7 @@ export async function getBudgetBookById(id: string) {
     ownerId: data.ownerId,
     archived: data.archived,
     description: data.description,
+    participants: data.participants,
+    createdAt: data.createdAt.toDate().toISOString(),
   };
 }
