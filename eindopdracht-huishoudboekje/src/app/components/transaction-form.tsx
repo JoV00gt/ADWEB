@@ -1,0 +1,93 @@
+'use client';
+
+import { useState } from 'react';
+import { addTransactions } from '@/app/lib/actions/transactions-actions';
+import TransactionRow from './transaction-row';
+import { useRouter } from 'next/navigation';
+import { validateTransactions } from '../lib/utils/validation-rules';
+
+const MAX_ROWS = 10;
+
+export default function TransactionForm({ budgetBookId }: { budgetBookId: string }) {
+  const router = useRouter();
+  const [transactions, setTransactions] = useState([
+    { amount: '', type: 'uitgave', date: new Date() },
+  ]);
+  const [error, setError] = useState('');
+
+  const handleAddRow = () => {
+    if (transactions.length >= MAX_ROWS) {
+      setError('Maximaal 10 transacties toegestaan');
+      return;
+    }
+    setError('');
+    setTransactions(prev => [
+      { amount: '', type: 'uitgave', date: new Date() },
+      ...prev,
+    ]);
+  };
+
+  const handleInputChange = (index: number, field: 'amount' | 'type', value: string) => {
+    setError('');
+    setTransactions(prev => {
+      const updated = [...prev];
+      updated[index] = { ...updated[index], [field]: value };
+      return updated;
+    });
+  };
+
+  const handleDeleteRow = (index: number) => {
+    setError('');
+    setTransactions(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleSubmit = async () => {
+    setError('');
+    const validationError = validateTransactions(transactions);
+      if (validationError) {
+        setError(validationError);
+        return;
+      }
+    try {
+      await addTransactions(transactions, budgetBookId);
+      router.push('/dashboard');
+    } catch (err: any) {
+      setError(err.message || 'Er ging iets mis bij opslaan.');
+    }
+  };
+
+  return (
+    <div className="max-w-3xl mx-auto mt-10 p-4 bg-white shadow rounded-lg">
+      <h1 className="text-2xl font-semibold mb-6">Transacties toevoegen</h1>
+
+      {error && <div className="mb-4 text-red-600 font-medium">{error}</div>}
+
+      {transactions.map((tx, index) => (
+        <TransactionRow
+          key={index}
+          index={index}
+          transaction={tx}
+          onChange={handleInputChange}
+          onDelete={handleDeleteRow}
+          canDelete={transactions.length > 1}
+        />
+      ))}
+
+      <div className="flex gap-4 mt-6">
+        <button
+          onClick={handleAddRow}
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          Voeg transactie toe
+        </button>
+
+        <button
+          onClick={handleSubmit}
+          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+        >
+          Opslaan
+        </button>
+      </div>
+    </div>
+  );
+}

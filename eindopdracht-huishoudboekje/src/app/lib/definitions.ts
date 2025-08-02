@@ -10,6 +10,13 @@ export type BudgetBook = {
   createdAt: Timestamp
 };
 
+export type Transaction = {
+  id: string; 
+  amount: number;
+  type: 'uitgave' | 'inkomen'; 
+  date: Date; 
+};
+
 export type User = {
   id: string;
   name: string;

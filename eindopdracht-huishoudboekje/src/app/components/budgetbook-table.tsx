@@ -24,14 +24,23 @@ export function BudgetBookTable({ budgetBooks, isArchived, currentUser }: { budg
               <td className="px-6 py-4 text-blue-600">
   {book.ownerId === currentUser && (
  <div className="flex items-center space-x-4">
-    {!isArchived && (
-      <Link
-        href={`/dashboard/${book.id}/edit`}
-        className="text-blue-600 hover:text-blue-800 font-medium underline"
-      >
-        Bewerk
-      </Link>
-    )}
+        {!isArchived && (
+          <>
+            <Link
+              href={`/dashboard/${book.id}/edit`}
+              className="text-blue-600 hover:text-blue-800 font-medium underline"
+            >
+              Bewerk
+            </Link>
+
+            <Link
+              href={`/dashboard/${book.id}/transactions`}
+              className="text-green-600 hover:text-green-800 font-medium underline"
+            >
+              Transacties
+            </Link>
+          </>
+        )}
     <button
       className="text-red-500 hover:text-red-700 font-medium underline"
       onClick={() => archiveBudgetBook(book.id, !book.archived)}

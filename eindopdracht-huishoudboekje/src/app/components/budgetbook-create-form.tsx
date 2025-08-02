@@ -8,7 +8,7 @@ import { listenToUsers } from "../lib/listeners/user-listener";
 import MultiSelect from "./select";
 
 export default function BudgetBookForm() {
-  const [error, setError] = useState(null);
+  const [error, setError] = useState('');
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
@@ -28,7 +28,7 @@ export default function BudgetBookForm() {
 
   const handleSubmit = async (formData: FormData) => {
     try {
-      setError(null);
+      setError('');
       await createBudgetBook(formData, currentUserId);
     } catch (err: any) {
       setError(err.message || 'Er ging iets mis.');
