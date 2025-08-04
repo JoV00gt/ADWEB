@@ -135,7 +135,7 @@ const { paginatedItems: paginatedTransactions, totalPages: totalTxPages } = pagi
             ) : (
               <>
               <Suspense fallback={<TransactionListSkeleton/>}>
-                 <TransactionList transactions={paginatedTransactions} />
+                 <TransactionList transactions={paginatedTransactions} budgetBookId={selectedBook.id} />
               </Suspense>
                 <Pagination
                   currentPage={currentTxPage}

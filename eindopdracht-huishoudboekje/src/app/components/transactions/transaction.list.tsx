@@ -1,9 +1,23 @@
+import { deleteTransaction } from '@/app/lib/actions/transactions-actions';
 import type { Transaction } from '@/app/lib/definitions';
+import { useState } from 'react';
 
-export function TransactionList({ transactions }: { transactions: Transaction[] }) {
+export function TransactionList({ transactions, budgetBookId }: { transactions: Transaction[], budgetBookId: string }) {
+  const [error, setError] = useState('');
+
+  const handleDelete = async (bookId: string, transactionId: string) => {
+    setError('');
+    try {
+      await deleteTransaction(bookId, transactionId);
+    } catch (error) {
+      setError('Fout bij het verwijderen');
+    }
+  };
+
   return (
     <div className="border rounded-lg p-4 shadow bg-white">
       <h3 className="text-lg font-semibold mb-4">Transacties</h3>
+      {error && <p className="text-red-600">{error}</p>}
       <ul className="space-y-2">
         {transactions.map((tx, id) => (
           <li key={id} className="flex justify-between items-center border-b pb-2">
@@ -18,6 +32,10 @@ export function TransactionList({ transactions }: { transactions: Transaction[] 
             >
               € {Number(tx.amount).toFixed(2)}
             </p>
+            <button onClick={() => handleDelete(budgetBookId, tx.id)}
+              className="text-red-600 hover:text-red-800 text-sm">
+              Verwijderen
+            </button>
           </li>
         ))}
       </ul>

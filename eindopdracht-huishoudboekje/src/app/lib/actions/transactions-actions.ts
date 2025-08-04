@@ -1,6 +1,6 @@
 'use server'
 
-import { collection, doc, updateDoc, addDoc, Timestamp, writeBatch } from 'firebase/firestore';
+import { collection, doc, updateDoc, Timestamp, writeBatch, deleteDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
 export async function addTransactions(transactions: { amount: string; type: string; date: Date }[], budgetBookId: string) {
@@ -22,5 +22,9 @@ try {
      console.error('Failed to add transactions:', err);
     throw new Error('Transacties konden niet worden opgeslagen.');
   }
+}
+
+export async function deleteTransaction(budgetBookId: string, transactionId: string) {
+  await deleteDoc(doc(db, 'budgetBooks', budgetBookId, 'transactions', transactionId));
 }
 
