@@ -116,26 +116,21 @@ const { paginatedItems: paginatedTransactions, totalPages: totalTxPages } = pagi
             <Suspense fallback={<TransactionStatsSkeleton />}>
                 <TransactionStats transactions={sortedTransactions} />
             </Suspense>
-            <div className="flex justify-between items-center mt-6 mb-2">
-              <Link
-                href={`/dashboard/${selectedBook.id}/transactions/create`}
-                className="text-sm px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
-                Transactie toevoegen
-              </Link>
-              {transactions.length > 0 && (
+            {selectedBook.ownerId === userId && (
+              <div className="flex justify-between items-center mt-6 mb-2">
                 <Link
-                  href={`/dashboard/${selectedBook.id}/transactions/edit`}
-                  className="text-sm px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600">
-                  Transactie bewerken
+                  href={`/dashboard/${selectedBook.id}/transactions/create`}
+                  className="text-sm px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+                  Transactie toevoegen
                 </Link>
-              )}
-            </div>
+              </div>
+            )}
             {transactions.length === 0 ? (
               <p className="text-center text-gray-400 italic mt-6">Geen transacties gevonden.</p>
             ) : (
               <>
               <Suspense fallback={<TransactionListSkeleton/>}>
-                 <TransactionList transactions={paginatedTransactions} budgetBookId={selectedBook.id} />
+                 <TransactionList ownerId={selectedBook.ownerId} currentUser={userId} transactions={paginatedTransactions} budgetBookId={selectedBook.id} />
               </Suspense>
                 <Pagination
                   currentPage={currentTxPage}

@@ -1,8 +1,9 @@
 import { deleteTransaction } from '@/app/lib/actions/transactions-actions';
 import type { Transaction } from '@/app/lib/definitions';
+import Link from 'next/link';
 import { useState } from 'react';
 
-export function TransactionList({ transactions, budgetBookId }: { transactions: Transaction[], budgetBookId: string }) {
+export function TransactionList({ transactions, budgetBookId, currentUser, ownerId }: { transactions: Transaction[], budgetBookId: string, currentUser: string | null, ownerId: string }) {
   const [error, setError] = useState('');
 
   const handleDelete = async (bookId: string, transactionId: string) => {
@@ -32,10 +33,18 @@ export function TransactionList({ transactions, budgetBookId }: { transactions: 
             >
               € {Number(tx.amount).toFixed(2)}
             </p>
-            <button onClick={() => handleDelete(budgetBookId, tx.id)}
-              className="text-red-600 hover:text-red-800 text-sm">
-              Verwijderen
-            </button>
+            {ownerId === currentUser && (
+              <div className="flex items-center gap-8">
+                <Link
+                  href={`/dashboard/${budgetBookId}/transactions/${tx.id}/edit`}
+                  className="text-sm text-blue-600 hover:underline">
+                  Bewerken
+                </Link>
+                <button onClick={() => handleDelete(budgetBookId, tx.id)} className="text-sm text-red-600 hover:text-red-800">
+                  Verwijderen
+                </button>
+                </div>
+            )}
           </li>
         ))}
       </ul>

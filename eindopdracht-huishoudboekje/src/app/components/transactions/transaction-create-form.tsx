@@ -27,7 +27,7 @@ export default function TransactionForm({ budgetBookId }: { budgetBookId: string
     ]);
   };
 
-  const handleInputChange = (index: number, field: 'amount' | 'type', value: string) => {
+  const handleInputChange = (index: number, field: 'amount' | 'type' | 'date', value: string) => {
     setError('');
     setTransactions(prev => {
       const updated = [...prev];
