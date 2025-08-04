@@ -1,6 +1,6 @@
 'use client'
 
-import TransactionForm from '@/app/components/transaction-form';
+import TransactionForm from '@/app/components/transactions/transaction-form';
 import { useParams } from 'next/navigation';
 
 export default function TransactionsPage() {

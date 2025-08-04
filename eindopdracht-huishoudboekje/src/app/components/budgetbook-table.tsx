@@ -2,7 +2,10 @@ import Link from 'next/link';
 import type { BudgetBook } from '../lib/definitions';
 import { archiveBudgetBook } from '../lib/actions/budgetbook-actions';
 
-export function BudgetBookTable({ budgetBooks, isArchived, currentUser }: { budgetBooks: BudgetBook[], isArchived: boolean, currentUser: any }) {
+export function BudgetBookTable({ budgetBooks, isArchived, currentUser, onSelectBook, selectedBook }: 
+  { budgetBooks: BudgetBook[], isArchived: boolean, currentUser: any,  
+  onSelectBook?: (book: BudgetBook) => void;
+  selectedBook?: BudgetBook | null }) {
   return (
     <div>
       <table className="min-w-full bg-white shadow-md rounded-xl border-separate border-spacing-y-2">
@@ -15,10 +18,10 @@ export function BudgetBookTable({ budgetBooks, isArchived, currentUser }: { budg
         </thead>
         <tbody>
           {budgetBooks.map((book) => (
-            <tr
+           <tr
               key={book.id}
-              className="bg-white hover:bg-blue-50 transition rounded-md shadow-sm"
-            >
+              onClick={onSelectBook ? () => onSelectBook(book) : undefined}
+              className={`transition rounded-md shadow-sm ${onSelectBook ? `cursor-pointer ${selectedBook?.id === book.id ? 'bg-blue-100 hover:bg-blue-200': 'bg-white hover:bg-blue-50'}`: 'bg-white'}`}>
               <td className="px-6 py-4 text-gray-800">{book.name}</td>
               <td className="px-6 py-4 text-gray-600">{book.description}</td>
               <td className="px-6 py-4 text-blue-600">
@@ -31,13 +34,6 @@ export function BudgetBookTable({ budgetBooks, isArchived, currentUser }: { budg
               className="text-blue-600 hover:text-blue-800 font-medium underline"
             >
               Bewerk
-            </Link>
-
-            <Link
-              href={`/dashboard/${book.id}/transactions`}
-              className="text-green-600 hover:text-green-800 font-medium underline"
-            >
-              Transacties
             </Link>
           </>
         )}

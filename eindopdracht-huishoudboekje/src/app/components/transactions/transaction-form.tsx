@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { addTransactions } from '@/app/lib/actions/transactions-actions';
 import TransactionRow from './transaction-row';
 import { useRouter } from 'next/navigation';
-import { validateTransactions } from '../lib/utils/validation-rules';
+import { validateTransactions } from '@/app/lib/utils/validation-rules';
 
 const MAX_ROWS = 10;
 
