@@ -151,7 +151,8 @@ const { paginatedItems: paginatedTransactions, totalPages: totalTxPages } = pagi
                       ownerId={selectedBook.ownerId}
                       currentUser={userId}
                       transactions={paginatedTransactions}
-                      budgetBookId={selectedBook.id}/>
+                      budgetBookId={selectedBook.id}
+                      categories={categories}/>
                   </Suspense>
                   <Pagination
                       currentPage={currentTxPage}

@@ -7,13 +7,15 @@ export default function TransactionRow({
   onDelete,
   canDelete,
   isEditing = false,
+  categories
 }: {
   index: number;
-  transaction: { amount: string; type: string; date: Date };
-  onChange: (index: number, field: 'amount' | 'type' | 'date', value: string) => void;
+  transaction: { amount: string; type: string; date: Date, categoryId?: string; };
+  onChange: (index: number, field: 'amount' | 'type' | 'date' | 'categoryId', value: string) => void;
   onDelete: (index: number) => void;
   canDelete: boolean;
   isEditing?: boolean;
+  categories: {id: string, name: string}[];
 }) {
   return (
     <div className="flex items-center gap-4 mb-4">
@@ -27,7 +29,7 @@ export default function TransactionRow({
       />
 
       <select
-        className="border p-2 rounded w-1/3"
+        className="border p-2 rounded"
         value={transaction.type}
         onChange={e => onChange(index, 'type', e.target.value)}
       >
@@ -42,6 +44,19 @@ export default function TransactionRow({
         onChange={e => onChange(index, 'date', e.target.value)}
         required
       />
+
+      <select
+        className="border p-2 rounded"
+        value={transaction.categoryId || ''}
+        onChange={e => onChange(index, 'categoryId', e.target.value)}
+      >
+        <option value="">Geen categorie</option>
+        {categories.map(cat => (
+          <option key={cat.id} value={cat.id}>
+            {cat.name}
+          </option>
+        ))}
+      </select>
 
       <div className="w-6 text-center">
         {canDelete ? (

@@ -1,19 +1,27 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { addTransactions } from '@/app/lib/actions/transactions-actions';
 import TransactionRow from './transaction-row';
 import { useRouter } from 'next/navigation';
 import { validateTransactions } from '@/app/lib/utils/validation-rules';
+import { Category } from '@/app/lib/definitions';
+import { listenCategories } from '@/app/lib/listeners/category-listener';
 
 const MAX_ROWS = 10;
 
 export default function TransactionForm({ budgetBookId }: { budgetBookId: string }) {
   const router = useRouter();
   const [transactions, setTransactions] = useState([
-    { amount: '', type: 'uitgave', date: new Date() },
+    { amount: '', type: 'uitgave', date: new Date(), categoryId: '' },
   ]);
   const [error, setError] = useState('');
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    const unsubscribe = listenCategories(setCategories, budgetBookId);
+    return () => unsubscribe();
+  }, [budgetBookId]);
 
   const handleAddRow = () => {
     if (transactions.length >= MAX_ROWS) {
@@ -22,12 +30,12 @@ export default function TransactionForm({ budgetBookId }: { budgetBookId: string
     }
     setError('');
     setTransactions(prev => [
-      { amount: '', type: 'uitgave', date: new Date() },
+      { amount: '', type: 'uitgave', date: new Date(), categoryId: '' },
       ...prev,
     ]);
   };
 
-  const handleInputChange = (index: number, field: 'amount' | 'type' | 'date', value: string) => {
+  const handleInputChange = (index: number, field: 'amount' | 'type' | 'date' | 'categoryId', value: string) => {
     setError('');
     setTransactions(prev => {
       const updated = [...prev];
@@ -70,6 +78,7 @@ export default function TransactionForm({ budgetBookId }: { budgetBookId: string
           onChange={handleInputChange}
           onDelete={handleDeleteRow}
           canDelete={transactions.length > 1}
+          categories={categories}
         />
       ))}
 

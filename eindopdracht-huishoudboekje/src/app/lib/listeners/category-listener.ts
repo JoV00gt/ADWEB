@@ -3,7 +3,7 @@ import { db } from '../firebase';
 import { Category } from '../definitions';
 
 export function listenCategories(listener: (categories: Category[]) => void, budgetBookId: string): Unsubscribe {
-    const q = query(collection(db, 'categories'), where('budgetBookId', '==', budgetBookId));
+    const q = query(collection(db, 'budgetBooks', budgetBookId, 'categories'));
 
   const unsubscribe = onSnapshot(q, (snapshot) => {
     const categories: Category[] = snapshot.docs.map((doc) => ({

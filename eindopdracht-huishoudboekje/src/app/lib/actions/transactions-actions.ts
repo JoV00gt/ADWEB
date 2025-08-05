@@ -3,7 +3,7 @@
 import { collection, doc, updateDoc, Timestamp, writeBatch, deleteDoc, getDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
-export async function addTransactions(transactions: { amount: string; type: string; date: Date }[], budgetBookId: string) {
+export async function addTransactions(transactions: { amount: string; type: string; date: Date, categoryId: string }[], budgetBookId: string) {
 try {
     const batch = writeBatch(db);
     const txCollection = collection(db, 'budgetBooks', budgetBookId, 'transactions');
@@ -14,6 +14,7 @@ try {
         amount: tx.amount,
         type: tx.type,
         date: Timestamp.fromDate(tx.date),
+        categoryId: tx.categoryId
       });
     });
 
@@ -24,11 +25,12 @@ try {
   }
 }
 
-export async function updateTransaction(budgetBookId: string, transactionId: string, updated: { amount: string; type: string; date: Date }) {
+export async function updateTransaction(budgetBookId: string, transactionId: string, updated: { amount: string; type: string; date: Date, categoryId: string }) {
   await updateDoc(doc(db, 'budgetBooks', budgetBookId, 'transactions', transactionId), {
     amount: updated.amount,
     type: updated.type,
     date: Timestamp.fromDate(updated.date),
+    categoryId: updated.categoryId
   });
 }
 
