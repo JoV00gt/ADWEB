@@ -16,6 +16,8 @@ import { TransactionListSkeleton, TransactionStatsSkeleton } from '../components
 import { paginate } from '../lib/utils/pagination';
 import { listenCategories } from '../lib/listeners/category-listener';
 import { CategoryOverview } from '../components/category/category-overview';
+import { CategoryExpensesChart } from '../components/bar-chart';
+import { DailyBalanceChart } from '../components/line-chart';
 
 export default function DashboardPage() {
   const [budgetBooks, setBudgetBooks] = useState<BudgetBook[]>([]);
@@ -177,6 +179,10 @@ export default function DashboardPage() {
                 categories={categories}
                 transactions={transactions}
               />
+            </div>
+            <div className="mt-10 grid md:grid-cols-2 gap-6">
+              <DailyBalanceChart transactions={transactions} selectedMonth={selectedMonth} />
+              <CategoryExpensesChart categories={categories} transactions={transactions} />
             </div>
           </div>
         )}
