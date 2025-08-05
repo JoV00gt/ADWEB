@@ -39,6 +39,31 @@ export function BudgetBookTableSkeleton() {
   );
 }
 
+export default function BudgetBookFormSkeleton() {
+  return (
+    <div className="max-w-md mx-auto bg-white p-6 rounded shadow space-y-4 animate-pulse">
+      <div className="h-4 bg-gray-300 rounded w-1/3" />
+      
+      <div className="space-y-2">
+        <div className="h-4 bg-gray-300 rounded w-1/4" />
+        <div className="h-10 bg-gray-200 rounded" />
+      </div>
+
+      <div className="space-y-2">
+        <div className="h-4 bg-gray-300 rounded w-1/4" />
+        <div className="h-20 bg-gray-200 rounded" />
+      </div>
+
+      <div className="space-y-2">
+        <div className="h-4 bg-gray-300 rounded w-1/3" />
+        <div className="h-32 bg-gray-200 rounded" />
+      </div>
+
+      <div className="h-10 bg-gray-300 rounded w-24" />
+    </div>
+  );
+}
+
 export function TransactionStatsSkeleton() {
   return (
     <div className="animate-pulse space-y-2 mb-4">
