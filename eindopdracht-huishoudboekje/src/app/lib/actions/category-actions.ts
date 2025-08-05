@@ -1,5 +1,5 @@
 import { db } from '../firebase';
-import { collection, addDoc, Timestamp, updateDoc, doc, getDoc } from 'firebase/firestore';
+import { collection, addDoc, Timestamp, updateDoc, doc, getDoc, deleteDoc } from 'firebase/firestore';
 
 export async function addCategory(bookId: string, name: string, budget: number, endDate?: string) {
   if (!name) throw new Error('Naam is verplicht');
@@ -17,6 +17,10 @@ export async function updateCategory(budgetBookId: string, categoryId: string, u
       budget: updated.budget,
       endDate: updated.endDate,
   });
+}
+
+export async function deleteCategory(budgetBookId: string, categoryId: string) {
+  await deleteDoc(doc(db, 'budgetBooks', budgetBookId, 'categories', categoryId));
 }
 
 export async function getCategoryById(budgetBookId: string, categoryId: string) {

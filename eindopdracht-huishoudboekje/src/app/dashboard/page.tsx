@@ -171,6 +171,8 @@ export default function DashboardPage() {
               </div>
 
               <CategoryOverview
+                ownerId={selectedBook.ownerId}
+                currentUser={userId}
                 budgetBookId={selectedBook.id}
                 categories={categories}
                 transactions={transactions}
