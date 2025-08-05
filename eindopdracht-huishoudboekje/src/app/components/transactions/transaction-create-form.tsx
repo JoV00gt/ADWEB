@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { validateTransactions } from '@/app/lib/utils/validation-rules';
 import { Category } from '@/app/lib/definitions';
 import { listenCategories } from '@/app/lib/listeners/category-listener';
+import ErrorMessage from '../error';
 
 const MAX_ROWS = 10;
 
@@ -68,7 +69,7 @@ export default function TransactionForm({ budgetBookId }: { budgetBookId: string
     <div className="max-w-3xl mx-auto mt-10 p-4 bg-white shadow rounded-lg">
       <h1 className="text-2xl font-semibold mb-6">Transacties toevoegen</h1>
 
-      {error && <div className="mb-4 text-red-600 font-medium">{error}</div>}
+     <ErrorMessage message={error} />
 
       {transactions.map((tx, index) => (
         <TransactionRow

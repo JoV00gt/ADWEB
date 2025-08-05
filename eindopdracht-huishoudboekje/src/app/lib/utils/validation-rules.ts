@@ -7,3 +7,22 @@ export function validateTransactions(transactions: { amount: string; type: strin
   }
   return '';
 }
+
+export function validateUserId(userId: any) {
+  if (!userId) {
+    throw new Error('Gebruiker is niet ingelogd');
+  }
+}
+
+export function validateName(name: string | undefined) {
+  if (!name || name.trim() === '') {
+    throw new Error('Naam is verplicht');
+  }
+}
+
+export function validateBudget(budget: string | number) {
+  const budgetValue = Number(budget);
+  if (isNaN(budgetValue) || budgetValue < 0) {
+    throw new Error('Limiet moet een positief getal zijn');
+  }
+}

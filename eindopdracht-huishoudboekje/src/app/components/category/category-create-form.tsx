@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { addCategory } from '@/app/lib/actions/category-actions';
 import { useRouter } from 'next/navigation';
+import ErrorMessage from '../error';
 
 export default function CategoryForm({ budgetBookId }: { budgetBookId: string }) {
   const [name, setName] = useState('');
@@ -25,7 +26,7 @@ export default function CategoryForm({ budgetBookId }: { budgetBookId: string })
     <div className="bg-white p-4 rounded shadow max-w-lg mx-auto">
       <h2 className="text-xl font-semibold mb-4">Categorie toevoegen</h2>
 
-      {error && <p className="text-red-600 mb-2">{error}</p>}
+     <ErrorMessage message={error} />
 
       <div className="mb-4">
         <label className="block mb-1">Naam *</label>

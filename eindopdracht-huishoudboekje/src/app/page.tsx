@@ -3,12 +3,13 @@
 import { useAuth } from './lib/context/auth-context';
 import LogoutButton from '@/app/components/auth/logout-button';
 import Link from 'next/link';
+import { Spinner } from './components/spinner';
 
 export default function HomePage() {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return <div className="text-center mt-10">Laden...</div>;
+    return ( <Spinner/>);
   }
 
   return (

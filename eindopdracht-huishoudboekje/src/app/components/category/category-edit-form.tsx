@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { updateCategory } from '@/app/lib/actions/category-actions';
 import { formatDate } from '@/app/lib/utils/format-date';
+import ErrorMessage from '../error';
+import { validateBudget, validateName } from '@/app/lib/utils/validation-rules';
 
 export default function EditCategoryForm({
   category,
@@ -22,18 +24,9 @@ export default function EditCategoryForm({
 
   const handleSubmit = async () => {
     setError('');
-
-    if (!cat.name.trim()) {
-      setError('Naam is verplicht');
-      return;
-    }
-
-    if (isNaN(Number(cat.budget)) || Number(cat.budget) < 0) {
-      setError('Limiet moet een positief getal zijn');
-      return;
-    }
-
     try {
+      validateName(cat.name);
+      validateBudget(cat.budget);
       await updateCategory(budgetBookId, category.id, {
         name: cat.name,
         budget: Number(cat.budget),
@@ -50,7 +43,7 @@ export default function EditCategoryForm({
     <div className="max-w-xl mx-auto mt-10 bg-white shadow rounded-lg p-6">
       <h1 className="text-2xl font-semibold mb-6">Categorie bewerken</h1>
 
-      {error && <p className="text-red-600 font-medium mb-4">{error}</p>}
+      <ErrorMessage message={error} />
 
       <div className="mb-4">
         <label className="block mb-1 font-medium">Naam</label>

@@ -20,7 +20,6 @@ try {
 
     await batch.commit();
   } catch (err) {
-    console.error('Failed to add transactions:', err);
     throw new Error('Transacties konden niet worden opgeslagen.');
   }
 }
@@ -40,8 +39,7 @@ export async function deleteTransaction(budgetBookId: string, transactionId: str
 
 export async function getTransactionById(budgetBookId: string, transactionId: string) {
   try {
-    const docRef = doc(db, 'budgetBooks', budgetBookId, 'transactions', transactionId);
-    const snapshot = await getDoc(docRef);
+    const snapshot = await getDoc(doc(db, 'budgetBooks', budgetBookId, 'transactions', transactionId));
     if (!snapshot.exists()) return null;
     const data = snapshot.data();
     return {
@@ -50,7 +48,7 @@ export async function getTransactionById(budgetBookId: string, transactionId: st
       date: data.date.toDate(),
     };
   } catch {
-    return null;
+    throw new Error('Kon transactie niet ophalen');
   }
 }
 

@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/app/lib/context/auth-context';
+import { Spinner } from '../spinner';
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -15,7 +16,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     }
   }, [user, loading, pathname, router]);
 
-  if (loading) return <div>Checking auth...</div>;
+  if (loading) return (<Spinner/>);
 
   return <>{children}</>;
 }

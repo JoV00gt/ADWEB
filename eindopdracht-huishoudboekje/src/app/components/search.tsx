@@ -2,18 +2,13 @@
 
 import { useState, useEffect } from 'react';
 
-type SearchInputProps = {
-  placeholder?: string;
-  onSearch: (query: string) => void;
-};
-
-export function SearchInput({ placeholder = 'Zoeken...', onSearch }: SearchInputProps) {
+export function SearchInput({ placeholder = 'Zoeken...', onSearch }: { placeholder?: string, onSearch: (query: string) => void}) {
   const [value, setValue] = useState('');
 
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
       onSearch(value.trim().toLowerCase());
-    }, 300); // Debounced for 300ms
+    }, 300);
 
     return () => clearTimeout(delayDebounce);
   }, [value, onSearch]);

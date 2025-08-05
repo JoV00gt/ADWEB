@@ -4,7 +4,10 @@ import { deleteTransaction } from '@/app/lib/actions/transactions-actions';
 import type { Transaction } from '@/app/lib/definitions';
 import Link from 'next/link';
 import { useState } from 'react';
-import { ConfirmDeleteModal } from '../confirm-delete-modal'; // adjust path if needed
+import { ConfirmDeleteModal } from '../confirm-delete-modal';
+import { Pagination } from '../pagination';
+import { paginate } from '@/app/lib/utils/pagination';
+import ErrorMessage from '../error';
 
 export function TransactionList({
   transactions,
@@ -22,6 +25,8 @@ export function TransactionList({
   const [error, setError] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [transactionToDelete, setTransactionToDelete] = useState<Transaction | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 8;
 
   const handleDeleteClick = (transaction: Transaction) => {
     setTransactionToDelete(transaction);
@@ -40,12 +45,18 @@ export function TransactionList({
     }
   };
 
+  const { paginatedItems: paginatedTransactions, totalPages: totalPages} = paginate(
+    transactions,
+    currentPage,
+    ITEMS_PER_PAGE
+  );
+
   return (
     <div className="border rounded-lg p-4 shadow bg-white">
       <h3 className="text-lg font-semibold mb-4">Transacties</h3>
-      {error && <p className="text-red-600">{error}</p>}
+      <ErrorMessage message={error} />
       <ul className="space-y-2">
-        {transactions.map((tx, id) => {
+        {paginatedTransactions.map((tx, id) => {
           const categoryName =
             categories.find((cat) => cat.id === tx.categoryId)?.name || 'Geen categorie';
 
@@ -89,7 +100,14 @@ export function TransactionList({
         })}
       </ul>
 
-      {/* Modal for confirming transaction deletion */}
+      {totalPages > 1 && (
+        <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={(page) => setCurrentPage(page)}
+        />
+      )}
+
       <ConfirmDeleteModal
         isOpen={showModal}
         title="Transactie verwijderen?"

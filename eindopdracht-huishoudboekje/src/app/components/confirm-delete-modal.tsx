@@ -1,38 +1,25 @@
 'use client';
-
-import { useEffect } from 'react';
-
-type ConfirmDeleteModalProps = {
+export function ConfirmDeleteModal({isOpen, title = 'Weet je het zeker?', message = 'Deze actie kan niet ongedaan worden gemaakt.', onCancel, onConfirm}: 
+  {
   isOpen: boolean;
   title?: string;
   message?: string;
   onCancel: () => void;
   onConfirm: () => void;
-};
-
-export function ConfirmDeleteModal({
-  isOpen,
-  title = 'Weet je het zeker?',
-  message = 'Deze actie kan niet ongedaan worden gemaakt.',
-  onCancel,
-  onConfirm,
-}: ConfirmDeleteModalProps) {
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onCancel();
-    };
-
-    if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
-    }
-
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, [isOpen, onCancel]);
-
+}) {
   if (!isOpen) return null;
 
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      onCancel();
+    }
+  };
+
   return (
-    <div className="fixed inset-0 bg-gray-100 bg-opacity-50 flex items-center justify-center z-50">
+    <div
+      className="fixed inset-0 bg-gray-100 bg-opacity-50 flex items-center justify-center z-50"
+      onClick={handleBackdropClick}
+    >
       <div className="bg-white rounded-lg shadow-lg max-w-sm w-full p-6">
         <h2 className="text-lg font-semibold mb-2">{title}</h2>
         <p className="text-gray-700 mb-4">{message}</p>

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { login } from '@/app/lib/actions/auth-actions';
+import ErrorMessage from '../error';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
@@ -26,7 +27,7 @@ export default function LoginForm() {
     <form onSubmit={handleSubmit} className="max-w-sm mx-auto mt-20 bg-white p-6 rounded-lg shadow-md">
       <h2 className="text-2xl font-bold mb-4 text-center">Inloggen</h2>
 
-      {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+      <ErrorMessage message={error} />
 
       <div className="mb-4">
         <label className="block text-sm font-medium mb-1">E-mail</label>

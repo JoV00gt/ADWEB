@@ -3,19 +3,15 @@
 import { addDoc, collection, Timestamp, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { redirect } from 'next/navigation';
+import { validateName, validateUserId } from '../utils/validation-rules';
 
 export async function createBudgetBook(formData: FormData, userId: any) {
   const name = formData.get('name')?.toString();
   const description = formData.get('description')?.toString() || '';
   const participantIds = formData.getAll('participantIds').map(id => id.toString());
   
-  if (!name || name.trim() === '') {
-    throw new Error('Naam is verplicht');
-  }
-
-  if (!userId) {
-    throw new Error('Gebruiker is niet ingelogd');
-  }
+  validateName(name);
+  validateUserId(userId);
 
   await addDoc(collection(db, 'budgetBooks'), {
     name,
@@ -37,9 +33,7 @@ export async function updateBudgetBook(id: string, formData: FormData) {
     new Set(formData.getAll('participantIds').map(id => id.toString()))
   );
 
-  if (!name || name.trim() === '') {
-    throw new Error('Naam is verplicht');
-  }
+  validateName(name);
 
   await updateDoc(doc(db, 'budgetBooks', id), {
     name,
@@ -59,15 +53,12 @@ export async function archiveBudgetBook(id: string, archived: boolean) {
 }
 
 export async function getBudgetBookById(id: string) {
-  const docRef = doc(db, 'budgetBooks', id);
-  const docSnap = await getDoc(docRef);
-
-  if (!docSnap.exists()) return null;
-
-  const data = docSnap.data();
+  const budgetBook = await getDoc(doc(db, 'budgetBooks', id));
+  if (!budgetBook.exists()) return null;
+  const data = budgetBook.data();
 
   return {
-    id: docSnap.id,
+    id: budgetBook.id,
     name: data.name,
     ownerId: data.ownerId,
     archived: data.archived,

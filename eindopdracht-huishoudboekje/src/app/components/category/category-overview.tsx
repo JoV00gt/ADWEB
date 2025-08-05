@@ -8,7 +8,8 @@ import { useState } from 'react';
 import { Pagination } from '../pagination';
 import Link from 'next/link';
 import { deleteCategory } from '@/app/lib/actions/category-actions';
-import { ConfirmDeleteModal } from '../confirm-delete-modal'; // ⬅️ Make sure this path matches your file location
+import { ConfirmDeleteModal } from '../confirm-delete-modal';
+import ErrorMessage from '../error';
 
 export function CategoryOverview({
   categories,
@@ -56,7 +57,7 @@ export function CategoryOverview({
   return (
     <div className="w-full md:w-1/2 p-4 bg-gray-100 rounded shadow">
       <h3 className="text-lg font-semibold mb-4">Categorieën overzicht</h3>
-      {error && <p className="text-red-600">{error}</p>}
+      <ErrorMessage message={error} />
       {categories.length === 0 ? (
         <p className="text-center text-gray-500 italic">Geen categorieën gevonden.</p>
       ) : (

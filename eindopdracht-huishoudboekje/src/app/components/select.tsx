@@ -1,23 +1,13 @@
 'use client';
 
 import React from 'react';
-
-type MultiSelectProps = {
+export default function MultiSelect({options, selectedValues, onChange, name = 'participantIds', label = 'Selecteer deelnemers',}: {
   options: { label: string; value: string }[];
   selectedValues: string[];
   onChange: (selected: string[]) => void;
   name?: string;
   label?: string;
-};
-
-export default function MultiSelect({
-  options,
-  selectedValues,
-  onChange,
-  name = 'participantIds',
-  label = 'Selecteer deelnemers',
-}: MultiSelectProps) {
-
+}) {
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selected = Array.from(e.target.selectedOptions, (option) => option.value);

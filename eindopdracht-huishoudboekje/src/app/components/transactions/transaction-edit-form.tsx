@@ -7,6 +7,7 @@ import { updateTransaction } from '@/app/lib/actions/transactions-actions';
 import { validateTransactions } from '@/app/lib/utils/validation-rules';
 import { listenCategories } from '@/app/lib/listeners/category-listener';
 import { Category } from '@/app/lib/definitions';
+import ErrorMessage from '../error';
 
 export default function EditTransactionForm({budgetBookId, transaction}: {budgetBookId: string, transaction: any}) {
   const router = useRouter();
@@ -46,7 +47,7 @@ export default function EditTransactionForm({budgetBookId, transaction}: {budget
 
   return (
     <>
-      {error && <div className="mb-4 text-red-600 font-medium">{error}</div>}
+      <ErrorMessage message={error} />
 
       <TransactionRow
         index={0}

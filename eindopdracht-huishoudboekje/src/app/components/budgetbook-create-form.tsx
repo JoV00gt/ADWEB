@@ -1,30 +1,19 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from "react";
-import { createBudgetBook } from "../lib/actions/budgetbook-actions";
-import { getUserId } from "../lib/actions/auth-actions";
-import { User } from "../lib/definitions";
-import { listenToUsers } from "../lib/listeners/user-listener";
-import MultiSelect from "./select";
+import { useState } from 'react';
+import { createBudgetBook } from '../lib/actions/budgetbook-actions';
+import MultiSelect from './select';
+import { useParticipants } from '../lib/hooks/useParticipants';
+import ErrorMessage from './error';
 
 export default function BudgetBookForm() {
   const [error, setError] = useState('');
-  const [users, setUsers] = useState<User[]>([]);
-  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function fetchUserId() {
-      const id = await getUserId();
-      setCurrentUserId(id);
-    }
-    fetchUserId();
-  
-  const unsubscribe = listenToUsers(setUsers);
-  return () => unsubscribe();
-  }, []);
-
-  const filteredUsers = currentUserId ? users.filter(u => u.id !== currentUserId) : users;
+  const {
+    currentUserId,
+    filteredUsers,
+    selectedUserIds,
+    setSelectedUserIds,
+  } = useParticipants();
 
   const handleSubmit = async (formData: FormData) => {
     try {
@@ -34,13 +23,13 @@ export default function BudgetBookForm() {
       setError(err.message || 'Er ging iets mis.');
     }
   };
-  
+
   return (
     <form
       action={handleSubmit}
       className="max-w-md mx-auto bg-white p-6 rounded shadow space-y-4"
     >
-      {error && <p className="text-red-600">{error}</p>}
+      <ErrorMessage message={error} />
 
       <div>
         <label className="block text-sm font-medium">Naam *</label>
@@ -60,13 +49,13 @@ export default function BudgetBookForm() {
       </div>
 
       <div>
-      <MultiSelect
-        options={filteredUsers.map((u) => ({ label: u.email, value: u.id }))}
-        selectedValues={selectedUserIds}
-        onChange={setSelectedUserIds}
-        name="participantIds"
-        label="Deelnemers"
-      />
+        <MultiSelect
+          options={filteredUsers.map(u => ({ label: u.email, value: u.id }))}
+          selectedValues={selectedUserIds}
+          onChange={setSelectedUserIds}
+          name="participantIds"
+          label="Deelnemers"
+        />
       </div>
 
       <button

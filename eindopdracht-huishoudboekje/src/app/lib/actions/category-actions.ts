@@ -1,13 +1,14 @@
 import { db } from '../firebase';
 import { collection, addDoc, Timestamp, updateDoc, doc, getDoc, deleteDoc } from 'firebase/firestore';
+import { validateName } from '../utils/validation-rules';
 
 export async function addCategory(bookId: string, name: string, budget: number, endDate?: string) {
-  if (!name) throw new Error('Naam is verplicht');
+  validateName(name);
 
   await addDoc(collection(db, 'budgetBooks', bookId, 'categories'), {
     name,
     budget,
-    endDate: endDate ? Timestamp.fromDate(new Date(endDate)) : null,
+    endDate: endDate ? new Date(endDate) : null,
   });
 }
 
@@ -25,8 +26,7 @@ export async function deleteCategory(budgetBookId: string, categoryId: string) {
 
 export async function getCategoryById(budgetBookId: string, categoryId: string) {
   try {
-    const docRef = doc(db, 'budgetBooks', budgetBookId, 'categories', categoryId);
-    const snapshot = await getDoc(docRef);
+    const snapshot = await getDoc(doc(db, 'budgetBooks', budgetBookId, 'categories', categoryId));
     if (!snapshot.exists()) return null;
     const data = snapshot.data();
     return {

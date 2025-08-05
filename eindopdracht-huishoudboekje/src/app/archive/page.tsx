@@ -2,62 +2,39 @@
 
 import { BudgetBookTable } from '../components/budgetbook-table';
 import { Pagination } from '../components/pagination';
-import { useEffect, useState } from 'react';
-import type { BudgetBook } from '../lib/definitions';
-import { listenArchivedBudgetBooks } from '../lib/listeners/budgetbook-listener';
-import { getUserId } from '../lib/actions/auth-actions';
+import { useState } from 'react';
+import { paginate } from '../lib/utils/pagination';
+import { useArchivedBudgetBooks } from '../lib/hooks/useArchivedBooks';
+import { Spinner } from '../components/spinner';
+import { SearchInput } from '../components/search';
 
 
 export default function AcrhivePage() {
-  const [budgetBooks, setBudgetBooks] = useState<BudgetBook[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [userId, setUserId] = useState<string | null>(null);
+  const { budgetBooks, userId, loading } = useArchivedBudgetBooks();
+  const [searchQuery, setSearchQuery] = useState('');
   const ITEMS_PER_PAGE = 5;
 
-  useEffect(() => {
-    let unsubscribe: (() => void) | null = null;
+  const filteredBooks = budgetBooks.filter((book) => book.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  const { paginatedItems: paginatedBooks, totalPages } = paginate(filteredBooks, currentPage, ITEMS_PER_PAGE);
 
-    async function initListener() {
-      const userId = await getUserId();
-
-      if (!userId) {
-        return;
-      }
-      setUserId(userId);
-
-      unsubscribe = listenArchivedBudgetBooks((books: BudgetBook[]) => {
-        setBudgetBooks(books);
-      }, userId);
-    }
-
-    initListener();
-
-    return () => {
-      if (unsubscribe) unsubscribe();
-    };
-  }, []);
-
-  const totalPages = Math.ceil(budgetBooks.length / ITEMS_PER_PAGE);
-  const paginatedBooks = budgetBooks.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
-
+  if(loading) {
+    return ( <Spinner/>)
+  }
 
   return (
     <div className="overflow-x-auto flex items-center justify-center min-h-screen">
-  <div className="max-w-4xl w-full p-4 bg-white shadow rounded-lg">
-    <div className="flex items-center justify-between mb-4">
-      <h1 className="text-2xl font-semibold">Huishoudboekjes Archief</h1>
+      <div className="max-w-4xl w-full p-4 bg-white shadow rounded-lg">
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-2xl font-semibold">Huishoudboekjes Archief</h1>
+          <SearchInput placeholder="Zoek in archief..." onSearch={(value) => {setSearchQuery(value.trim().toLowerCase())}} />
+        </div>
+        <BudgetBookTable currentUser={userId} budgetBooks={paginatedBooks} isArchived={true} />
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}/>
+      </div>
     </div>
-    <BudgetBookTable currentUser={userId} budgetBooks={paginatedBooks} isArchived={true} />
-    <Pagination
-      currentPage={currentPage}
-      totalPages={totalPages}
-      onPageChange={setCurrentPage}
-    />
-  </div>
-</div>
-
   );
 }

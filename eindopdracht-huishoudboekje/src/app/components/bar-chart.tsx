@@ -5,38 +5,9 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from 'recharts';
 import type { Category, Transaction } from '@/app/lib/definitions';
+import { calculateExpensesPerCategory } from '../lib/utils/chart-utils';
 
-type CategoryExpensesChartProps = {
-  categories: Category[];
-  transactions: Transaction[];
-};
-
-function calculateExpensesPerCategory(categories: Category[], transactions: Transaction[]) {
-  const categoryMap = new Map<string, { expense: number; budget: number }>();
-
-  categories.forEach(({ id, name, budget }) => {
-    categoryMap.set(name, { expense: 0, budget });
-  });
-
-  transactions.forEach(({ categoryId, amount, type }) => {
-    if (type === 'uitgave' && categoryId) {
-      const cat = categories.find(c => c.id === categoryId);
-      if (cat) {
-        const current = categoryMap.get(cat.name);
-        if (current) {
-          current.expense += Number(amount);
-        }
-      }
-    }
-  });
-
-  return Array.from(categoryMap.entries())
-    .map(([name, { expense, budget }]) => ({ name, expense, budget }))
-    .filter(({ expense }) => expense > 0);
-}
-
-
-export function CategoryExpensesChart({ categories, transactions }: CategoryExpensesChartProps) {
+export function CategoryExpensesChart({ categories, transactions }: {categories: Category[], transactions: Transaction[]}) {
   const data = calculateExpensesPerCategory(categories, transactions);
 
   return (
