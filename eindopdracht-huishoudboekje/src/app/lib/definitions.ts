@@ -10,6 +10,14 @@ export type BudgetBook = {
   createdAt: Timestamp
 };
 
+export type Category = {
+  id: string;
+  name: string;
+  maxAmount: number;
+  endDate?: Date;
+  budgetBookId: string;
+};
+
 export type Transaction = {
   id: string; 
   amount: number;
