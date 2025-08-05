@@ -6,10 +6,7 @@ export default async function EditTransactionPage({params}: {params: Promise<{ i
   const { id: budgetBookId, transactionid } = await params;
 
   const transaction = await getTransactionById(budgetBookId, transactionid);
-
-  if (!transaction) {
-    notFound();
-  }
+  if (!transaction) return notFound();
 
   return (
     <div className="max-w-xl mx-auto mt-10 p-4 bg-white shadow rounded-lg">
