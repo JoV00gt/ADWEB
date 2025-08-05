@@ -131,7 +131,6 @@ export function CategoryOverview({
         </>
       )}
 
-      {/* 🧨 Delete confirmation modal */}
       <ConfirmDeleteModal
         isOpen={showModal}
         title="Categorie verwijderen?"

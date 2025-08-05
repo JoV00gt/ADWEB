@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from '@/app/lib/firebase';
+import { Spinner } from '@/app/components/spinner';
 
 const AuthContext = createContext<any>(null);
 
@@ -21,7 +22,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AuthContext.Provider value={{ user, loading }}>
-      {!loading ? children : <div>Loading auth...</div>}
+      {!loading ? children : <Spinner/>}
     </AuthContext.Provider>
   );
 }
