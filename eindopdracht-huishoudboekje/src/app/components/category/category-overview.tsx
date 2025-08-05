@@ -8,11 +8,26 @@ import { useState } from 'react';
 import { Pagination } from '../pagination';
 import Link from 'next/link';
 import { deleteCategory } from '@/app/lib/actions/category-actions';
+import { ConfirmDeleteModal } from '../confirm-delete-modal'; // ⬅️ Make sure this path matches your file location
 
-export function CategoryOverview({ categories, transactions, budgetBookId, currentUser, ownerId }: { categories: Category[], transactions: Transaction[], budgetBookId: string, currentUser: string | null, ownerId: string }) {
+export function CategoryOverview({
+  categories,
+  transactions,
+  budgetBookId,
+  currentUser,
+  ownerId,
+}: {
+  categories: Category[];
+  transactions: Transaction[];
+  budgetBookId: string;
+  currentUser: string | null;
+  ownerId: string;
+}) {
   const ITEMS_PER_PAGE = 5;
   const [currentPage, setCurrentPage] = useState(1);
   const [error, setError] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
 
   const { paginatedItems: paginatedCategories, totalPages } = paginate(
     categories,
@@ -20,32 +35,45 @@ export function CategoryOverview({ categories, transactions, budgetBookId, curre
     ITEMS_PER_PAGE
   );
 
-    const handleDelete = async (bookId: string, categoryId: string) => {
-      setError('');
-      try {
-        await deleteCategory(bookId, categoryId);
-      } catch (error) {
-        setError('Fout bij het verwijderen');
-      }
-    };
+  const handleDeleteClick = (category: Category) => {
+    setCategoryToDelete(category);
+    setShowModal(true);
+  };
 
+  const confirmDelete = async () => {
+    if (!categoryToDelete) return;
+
+    setError('');
+    try {
+      await deleteCategory(budgetBookId, categoryToDelete.id);
+      setShowModal(false);
+      setCategoryToDelete(null);
+    } catch (error) {
+      setError('Fout bij het verwijderen');
+    }
+  };
 
   return (
     <div className="w-full md:w-1/2 p-4 bg-gray-100 rounded shadow">
       <h3 className="text-lg font-semibold mb-4">Categorieën overzicht</h3>
       {error && <p className="text-red-600">{error}</p>}
       {categories.length === 0 ? (
-        <p className="text-center text-gray-500 italic">Geen categories gevonden.</p>
+        <p className="text-center text-gray-500 italic">Geen categorieën gevonden.</p>
       ) : (
         <>
           <div className="space-y-4">
-            {paginatedCategories.map(category => {
+            {paginatedCategories.map((category) => {
               const {
                 available,
                 percentageUsed,
                 isOver,
                 isWarning,
-              } = calculateCategoryUsage(category.id, Number(category.budget), transactions, category.endDate);
+              } = calculateCategoryUsage(
+                category.id,
+                Number(category.budget),
+                transactions,
+                category.endDate
+              );
 
               return (
                 <div key={category.id} className="space-y-1">
@@ -58,18 +86,22 @@ export function CategoryOverview({ categories, transactions, budgetBookId, curre
                         'text-green-600': !isOver && !isWarning,
                       })}
                     >
-                      {isOver ? `€${available.toFixed(2)} over budget heen` : `€${available.toFixed(2)} beschikbaar`}
+                      {isOver
+                        ? `€${available.toFixed(2)} over budget heen`
+                        : `€${available.toFixed(2)} beschikbaar`}
                     </span>
                     {ownerId === currentUser && (
-                      <div className='flex items-center gap-8'>
+                      <div className="flex items-center gap-8">
                         <Link
                           href={`/dashboard/${budgetBookId}/categories/${category.id}/edit`}
-                          className="text-sm text-blue-600 hover:underline">
+                          className="text-sm text-blue-600 hover:underline"
+                        >
                           Bewerken
                         </Link>
                         <button
-                          onClick={() => handleDelete(budgetBookId, category.id)}
-                          className="text-sm text-red-600 hover:text-red-800">
+                          onClick={() => handleDeleteClick(category)}
+                          className="text-sm text-red-600 hover:text-red-800"
+                        >
                           Verwijderen
                         </button>
                       </div>
@@ -98,6 +130,15 @@ export function CategoryOverview({ categories, transactions, budgetBookId, curre
           )}
         </>
       )}
+
+      {/* 🧨 Delete confirmation modal */}
+      <ConfirmDeleteModal
+        isOpen={showModal}
+        title="Categorie verwijderen?"
+        message={`Weet je zeker dat je de categorie "${categoryToDelete?.name}" wilt verwijderen?`}
+        onCancel={() => setShowModal(false)}
+        onConfirm={confirmDelete}
+      />
     </div>
   );
 }

@@ -18,6 +18,7 @@ import { listenCategories } from '../lib/listeners/category-listener';
 import { CategoryOverview } from '../components/category/category-overview';
 import { CategoryExpensesChart } from '../components/bar-chart';
 import { DailyBalanceChart } from '../components/line-chart';
+import { SearchInput } from '../components/search';
 
 export default function DashboardPage() {
   const [budgetBooks, setBudgetBooks] = useState<BudgetBook[]>([]);
@@ -28,6 +29,7 @@ export default function DashboardPage() {
   const [currentTxPage, setCurrentTxPage] = useState(1);
   const [userId, setUserId] = useState<string | null>(null);
   const [selectedMonth, setSelectedMonth] = useState<number>(new Date().getMonth());
+  const [searchQuery, setSearchQuery] = useState(''); // ✅
 
   const ITEMS_PER_PAGE = 5;
   const TRANSACTIONS_PER_PAGE = 8;
@@ -77,8 +79,13 @@ export default function DashboardPage() {
     return unsubscribe;
   }, [selectedBook]);
 
+  // ✅ Filtered books before pagination
+  const filteredBooks = budgetBooks.filter((book) =>
+    book.name.toLowerCase().includes(searchQuery)
+  );
+
   const { paginatedItems: paginatedBooks, totalPages } = paginate(
-    budgetBooks,
+    filteredBooks,
     currentPage,
     ITEMS_PER_PAGE
   );
@@ -106,6 +113,15 @@ export default function DashboardPage() {
           </Link>
         </div>
 
+        {/* ✅ Search input for filtering budget books */}
+        <SearchInput
+          placeholder="Zoek in huishoudboekjes..."
+          onSearch={(value) => {
+            setSearchQuery(value.trim().toLowerCase());
+            setCurrentPage(1);
+          }}
+        />
+
         <BudgetBookTable
           currentUser={userId}
           budgetBooks={paginatedBooks}
@@ -126,9 +142,11 @@ export default function DashboardPage() {
               <h2 className="text-xl font-semibold">{selectedBook.name}</h2>
               <MonthSelector selectedMonth={selectedMonth} onChange={setSelectedMonth} />
             </div>
+
             <Suspense fallback={<TransactionStatsSkeleton />}>
               <TransactionStats transactions={sortedTransactions} />
             </Suspense>
+
             {selectedBook.ownerId === userId && (
               <div className="flex justify-between items-center mt-6 mb-2">
                 <Link
@@ -153,22 +171,22 @@ export default function DashboardPage() {
             <div className="md:flex gap-6">
               <div className="md:w-2/3">
                 {transactions.length > 0 && (
-                  <Suspense fallback={<TransactionListSkeleton />}>
-                    <TransactionList
-                      ownerId={selectedBook.ownerId}
-                      currentUser={userId}
-                      transactions={paginatedTransactions}
-                      budgetBookId={selectedBook.id}
-                      categories={categories}
+                  <>
+                    <Suspense fallback={<TransactionListSkeleton />}>
+                      <TransactionList
+                        ownerId={selectedBook.ownerId}
+                        currentUser={userId}
+                        transactions={paginatedTransactions}
+                        budgetBookId={selectedBook.id}
+                        categories={categories}
+                      />
+                    </Suspense>
+                    <Pagination
+                      currentPage={currentTxPage}
+                      totalPages={totalTxPages}
+                      onPageChange={setCurrentTxPage}
                     />
-                  </Suspense>
-                )}
-                {transactions.length > 0 && (
-                  <Pagination
-                    currentPage={currentTxPage}
-                    totalPages={totalTxPages}
-                    onPageChange={setCurrentTxPage}
-                  />
+                  </>
                 )}
               </div>
 
@@ -180,6 +198,7 @@ export default function DashboardPage() {
                 transactions={transactions}
               />
             </div>
+
             <div className="mt-10 grid md:grid-cols-2 gap-6">
               <DailyBalanceChart transactions={transactions} selectedMonth={selectedMonth} />
               <CategoryExpensesChart categories={categories} transactions={transactions} />

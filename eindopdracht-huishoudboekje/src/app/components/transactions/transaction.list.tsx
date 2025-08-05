@@ -1,7 +1,10 @@
+'use client';
+
 import { deleteTransaction } from '@/app/lib/actions/transactions-actions';
 import type { Transaction } from '@/app/lib/definitions';
 import Link from 'next/link';
 import { useState } from 'react';
+import { ConfirmDeleteModal } from '../confirm-delete-modal'; // adjust path if needed
 
 export function TransactionList({
   transactions,
@@ -17,11 +20,21 @@ export function TransactionList({
   categories: { id: string; name: string }[];
 }) {
   const [error, setError] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [transactionToDelete, setTransactionToDelete] = useState<Transaction | null>(null);
 
-  const handleDelete = async (bookId: string, transactionId: string) => {
+  const handleDeleteClick = (transaction: Transaction) => {
+    setTransactionToDelete(transaction);
+    setShowModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!transactionToDelete) return;
     setError('');
     try {
-      await deleteTransaction(bookId, transactionId);
+      await deleteTransaction(budgetBookId, transactionToDelete.id);
+      setShowModal(false);
+      setTransactionToDelete(null);
     } catch (error) {
       setError('Fout bij het verwijderen');
     }
@@ -64,7 +77,7 @@ export function TransactionList({
                     Bewerken
                   </Link>
                   <button
-                    onClick={() => handleDelete(budgetBookId, tx.id)}
+                    onClick={() => handleDeleteClick(tx)}
                     className="text-sm text-red-600 hover:text-red-800"
                   >
                     Verwijderen
@@ -75,6 +88,15 @@ export function TransactionList({
           );
         })}
       </ul>
+
+      {/* Modal for confirming transaction deletion */}
+      <ConfirmDeleteModal
+        isOpen={showModal}
+        title="Transactie verwijderen?"
+        message={`Weet je zeker dat je deze transactie van €${Number(transactionToDelete?.amount).toFixed(2)} wilt verwijderen?`}
+        onCancel={() => setShowModal(false)}
+        onConfirm={confirmDelete}
+      />
     </div>
   );
 }
