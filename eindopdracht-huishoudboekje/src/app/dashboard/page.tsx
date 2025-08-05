@@ -9,16 +9,19 @@ import { MonthSelector } from '../components/month-selector';
 import { listenBudgetBooks } from '../lib/listeners/budgetbook-listener';
 import { listenTransactions } from '../lib/listeners/transaction-listener';
 import { getUserId } from '../lib/actions/auth-actions';
-import type { BudgetBook, Transaction } from '../lib/definitions';
+import type { BudgetBook, Category, Transaction } from '../lib/definitions';
 import { TransactionStats } from '../components/transactions/transaction-stats';
 import { TransactionList } from '../components/transactions/transaction.list';
 import { TransactionListSkeleton, TransactionStatsSkeleton } from '../components/skeletons';
 import { paginate } from '../lib/utils/pagination';
+import { listenCategories } from '../lib/listeners/category-listener';
+import { CategoryOverview } from '../components/category/category-overview';
 
 export default function DashboardPage() {
   const [budgetBooks, setBudgetBooks] = useState<BudgetBook[]>([]);
   const [selectedBook, setSelectedBook] = useState<BudgetBook | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentTxPage, setCurrentTxPage] = useState(1);
   const [userId, setUserId] = useState<string | null>(null);
@@ -63,6 +66,14 @@ export default function DashboardPage() {
 
     return unsubscribe;
   }, [selectedBook, selectedMonth]);
+
+  useEffect(() => {
+    if (!selectedBook) return;
+
+    const unsubscribe = listenCategories(setCategories, selectedBook.id);
+
+    return unsubscribe;
+  }, [selectedBook]);
 
 const { paginatedItems: paginatedBooks, totalPages } = paginate(
   budgetBooks,
@@ -133,15 +144,24 @@ const { paginatedItems: paginatedTransactions, totalPages: totalTxPages } = pagi
             {transactions.length === 0 ? (
               <p className="text-center text-gray-400 italic mt-6">Geen transacties gevonden.</p>
             ) : (
-              <>
-              <Suspense fallback={<TransactionListSkeleton/>}>
-                 <TransactionList ownerId={selectedBook.ownerId} currentUser={userId} transactions={paginatedTransactions} budgetBookId={selectedBook.id} />
-              </Suspense>
-                <Pagination
-                  currentPage={currentTxPage}
-                  totalPages={totalTxPages}
-                  onPageChange={setCurrentTxPage}/>
-              </>
+              <div className="md:flex gap-6">
+                <div className="md:w-2/3">
+                  <Suspense fallback={<TransactionListSkeleton />}>
+                    <TransactionList
+                      ownerId={selectedBook.ownerId}
+                      currentUser={userId}
+                      transactions={paginatedTransactions}
+                      budgetBookId={selectedBook.id}/>
+                  </Suspense>
+                  <Pagination
+                      currentPage={currentTxPage}
+                      totalPages={totalTxPages}
+                      onPageChange={setCurrentTxPage}/>
+                </div>
+                <CategoryOverview
+                  categories={categories}
+                  transactions={transactions}/>
+              </div>
             )}
           </div>
         )}

@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 
 export default function CategoryForm({ budgetBookId }: { budgetBookId: string }) {
   const [name, setName] = useState('');
-  const [maxAmount, setMaxAmount] = useState('');
+  const [budget, setBudget] = useState('');
   const [endDate, setEndDate] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
@@ -14,7 +14,7 @@ export default function CategoryForm({ budgetBookId }: { budgetBookId: string })
   const handleSubmit = async () => {
     setError('');
     try {
-      await addCategory(budgetBookId, name, parseFloat(maxAmount), endDate);
+      await addCategory(budgetBookId, name, parseFloat(budget), endDate);
       router.push('/dashboard');
     } catch (err: any) {
       setError(err.message);
@@ -42,8 +42,8 @@ export default function CategoryForm({ budgetBookId }: { budgetBookId: string })
         <input
           type="number"
           className="border p-2 rounded w-full"
-          value={maxAmount}
-          onChange={e => setMaxAmount(e.target.value)}
+          value={budget}
+          onChange={e => setBudget(e.target.value)}
         />
       </div>
 

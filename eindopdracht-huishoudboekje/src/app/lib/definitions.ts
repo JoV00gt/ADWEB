@@ -13,7 +13,7 @@ export type BudgetBook = {
 export type Category = {
   id: string;
   name: string;
-  maxAmount: number;
+  budget: number;
   endDate?: Date;
   budgetBookId: string;
 };
@@ -23,6 +23,7 @@ export type Transaction = {
   amount: number;
   type: 'uitgave' | 'inkomen'; 
   date: Date; 
+  categoryId: string;
 };
 
 export type User = {
