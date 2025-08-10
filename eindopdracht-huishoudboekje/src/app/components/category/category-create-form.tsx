@@ -29,8 +29,9 @@ export default function CategoryForm({ budgetBookId }: { budgetBookId: string })
      <ErrorMessage message={error} />
 
       <div className="mb-4">
-        <label className="block mb-1">Naam *</label>
+        <label htmlFor='name' className="block mb-1">Naam *</label>
         <input
+          id="name"
           type="text"
           className="border p-2 rounded w-full"
           value={name}
@@ -39,8 +40,9 @@ export default function CategoryForm({ budgetBookId }: { budgetBookId: string })
       </div>
 
       <div className="mb-4">
-        <label className="block mb-1">Maximaal budget *</label>
+        <label htmlFor='budget' className="block mb-1">Maximaal budget *</label>
         <input
+          id="budget"
           type="number"
           className="border p-2 rounded w-full"
           value={budget}
@@ -49,8 +51,9 @@ export default function CategoryForm({ budgetBookId }: { budgetBookId: string })
       </div>
 
       <div className="mb-4">
-        <label className="block mb-1">Einddatum (optioneel)</label>
+        <label htmlFor='date' className="block mb-1">Einddatum (optioneel)</label>
         <input
+          id="date"
           type="date"
           className="border p-2 rounded w-full"
           value={endDate}

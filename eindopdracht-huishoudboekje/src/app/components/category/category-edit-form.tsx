@@ -46,8 +46,9 @@ export default function EditCategoryForm({
       <ErrorMessage message={error} />
 
       <div className="mb-4">
-        <label className="block mb-1 font-medium">Naam</label>
+        <label htmlFor='name' className="block mb-1 font-medium">Naam</label>
         <input
+          id="name"
           type="text"
           className="border p-2 rounded w-full"
           value={cat.name}
@@ -58,8 +59,9 @@ export default function EditCategoryForm({
       </div>
 
       <div className="mb-6">
-        <label className="block mb-1 font-medium">Budget limiet (€)</label>
+        <label htmlFor='budget' className="block mb-1 font-medium">Budget limiet (€)</label>
         <input
+          id='budget'
           type="number"
           className="border p-2 rounded w-full"
           value={cat.budget}
@@ -70,8 +72,9 @@ export default function EditCategoryForm({
       </div>
 
       <div className="mb-6">
-        <label className="block mb-1 font-medium">Einddatum (optioneel)</label>
+        <label htmlFor="date" className="block mb-1 font-medium">Einddatum (optioneel)</label>
         <input
+          id="date"
           type="date"
           className="border p-2 rounded w-full"
           value={cat.endDate}

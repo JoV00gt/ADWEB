@@ -30,8 +30,9 @@ export default function LoginForm() {
       <ErrorMessage message={error} />
 
       <div className="mb-4">
-        <label className="block text-sm font-medium mb-1">E-mail</label>
+        <label htmlFor='email' className="block text-sm font-medium mb-1">E-mail</label>
         <input
+          id="email"
           type="email"
           required
           value={email}
@@ -41,8 +42,9 @@ export default function LoginForm() {
       </div>
 
       <div className="mb-6">
-        <label className="block text-sm font-medium mb-1">Wachtwoord</label>
+        <label htmlFor='password' className="block text-sm font-medium mb-1">Wachtwoord</label>
         <input
+          id="password"
           type="password"
           required
           value={password}

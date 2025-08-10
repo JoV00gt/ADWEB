@@ -16,8 +16,9 @@ export default function MultiSelect({options, selectedValues, onChange, name = '
 
   return (
     <div className="mb-4">
-      {label && <label className="block font-medium mb-1">{label}</label>}
+      {label && <label htmlFor='select' className="block font-medium mb-1">{label}</label>}
       <select
+        id="select"
         multiple
         value={selectedValues}
         onChange={handleChange}

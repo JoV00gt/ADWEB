@@ -18,7 +18,6 @@ import { useDashboardData } from '../lib/hooks/useDashboardData';
 
 export default function DashboardPage() {
   const [currentPage, setCurrentPage] = useState(1);
-  const [currentTxPage, setCurrentTxPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const {
     userId,

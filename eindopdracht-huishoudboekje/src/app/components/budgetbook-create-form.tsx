@@ -32,8 +32,9 @@ export default function BudgetBookForm() {
       <ErrorMessage message={error} />
 
       <div>
-        <label className="block text-sm font-medium">Naam *</label>
+        <label htmlFor="name" className="block text-sm font-medium">Naam *</label>
         <input
+          id="name"
           type="text"
           name="name"
           className="w-full border px-3 py-2 rounded"
@@ -41,8 +42,9 @@ export default function BudgetBookForm() {
       </div>
 
       <div>
-        <label className="block text-sm font-medium">Omschrijving</label>
+        <label htmlFor="description" className="block text-sm font-medium">Omschrijving</label>
         <textarea
+          id="description"
           name="description"
           className="w-full border px-3 py-2 rounded"
         />

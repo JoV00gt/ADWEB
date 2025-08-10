@@ -13,6 +13,7 @@ import {
 } from 'recharts';
 import type { Transaction } from '@/app/lib/definitions';
 import { groupByDay } from '../lib/utils/chart-utils';
+import { currencyFormatter } from '../lib/utils/number-utility';
 
 export function DailyBalanceChart({transactions, selectedMonth,}: {  transactions: Transaction[], selectedMonth: number}) {
   const data = groupByDay(transactions, selectedMonth);
@@ -28,11 +29,7 @@ export function DailyBalanceChart({transactions, selectedMonth,}: {  transaction
             tickFormatter={(value) => `€${value}`}
             width={60}
           />
-          <Tooltip
-            formatter={(value: any) =>
-              typeof value === 'number' ? `€${value.toFixed(2)}` : value
-            }
-          />
+          <Tooltip formatter={currencyFormatter} />
           <Legend />
           <Line type="monotone" dataKey="income" stroke="#4ade80" name="Inkomen" />
           <Line type="monotone" dataKey="expense" stroke="#f87171" name="Uitgaven" />

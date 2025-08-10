@@ -6,6 +6,7 @@ import {
 } from 'recharts';
 import type { Category, Transaction } from '@/app/lib/definitions';
 import { calculateExpensesPerCategory } from '../lib/utils/chart-utils';
+import { currencyFormatter } from '../lib/utils/number-utility';
 
 export function CategoryExpensesChart({ categories, transactions }: {categories: Category[], transactions: Transaction[]}) {
   const data = calculateExpensesPerCategory(categories, transactions);
@@ -18,9 +19,9 @@ export function CategoryExpensesChart({ categories, transactions }: {categories:
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis />
-                <Tooltip formatter={(value: any) => (typeof value === 'number' ? `€${value.toFixed(2)}` : value)} />
-                <Bar dataKey="expense" fill="#f87171" name="Uitgaven" />
-                <Bar dataKey="budget" fill="#069767ff" name="Budget" />
+                <Tooltip formatter={currencyFormatter} />
+                <Bar data-testid="bar-uitgaven" dataKey="expense" fill="#f87171" name="Uitgaven" />
+                <Bar data-testid="bar-budget" dataKey="budget" fill="#069767ff" name="Budget" />
             </BarChart>
         </ResponsiveContainer>
     </div>

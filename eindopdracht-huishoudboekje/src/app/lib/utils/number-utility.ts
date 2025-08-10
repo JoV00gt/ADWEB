@@ -11,3 +11,6 @@ export function getTotalExpenses(transactions: Transaction[]): number {
     .filter(tx => tx.type === 'uitgave')
     .reduce((sum, tx) => sum + Number(tx.amount), 0);
 }
+
+export const currencyFormatter = (value: any) =>
+  typeof value === 'number' ? `€${value.toFixed(2)}` : value;
