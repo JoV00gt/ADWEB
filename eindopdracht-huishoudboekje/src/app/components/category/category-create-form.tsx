@@ -36,6 +36,7 @@ export default function CategoryForm({ budgetBookId }: { budgetBookId: string })
           className="border p-2 rounded w-full"
           value={name}
           onChange={e => setName(e.target.value)}
+          required
         />
       </div>
 
@@ -47,6 +48,7 @@ export default function CategoryForm({ budgetBookId }: { budgetBookId: string })
           className="border p-2 rounded w-full"
           value={budget}
           onChange={e => setBudget(e.target.value)}
+          required
         />
       </div>
 

@@ -55,6 +55,7 @@ export default function EditCategoryForm({
           onChange={(e) =>
             setCat((prev) => ({ ...prev, name: e.target.value }))
           }
+          required
         />
       </div>
 
@@ -68,6 +69,7 @@ export default function EditCategoryForm({
           onChange={(e) =>
             setCat((prev) => ({ ...prev, budget: e.target.value }))
           }
+          required
         />
       </div>
 

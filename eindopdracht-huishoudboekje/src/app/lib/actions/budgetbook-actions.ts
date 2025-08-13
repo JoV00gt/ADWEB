@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation';
 import { validateName, validateUserId } from '../utils/validation-rules';
 
 export async function createBudgetBook(formData: FormData, userId: any) {
-  const name = formData.get('name')?.toString();
+  const name = formData.get('name')?.toString() || '';
   const description = formData.get('description')?.toString() || '';
   const participantIds = formData.getAll('participantIds').map(id => id.toString());
   

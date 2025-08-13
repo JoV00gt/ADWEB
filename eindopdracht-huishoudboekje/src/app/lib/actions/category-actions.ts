@@ -1,9 +1,10 @@
 import { db } from '../firebase';
 import { collection, addDoc, Timestamp, updateDoc, doc, getDoc, deleteDoc } from 'firebase/firestore';
-import { validateName } from '../utils/validation-rules';
+import { validateBudget, validateName } from '../utils/validation-rules';
 
 export async function addCategory(bookId: string, name: string, budget: number, endDate?: string) {
   validateName(name);
+  validateBudget(budget);
 
   await addDoc(collection(db, 'budgetBooks', bookId, 'categories'), {
     name,
@@ -13,6 +14,8 @@ export async function addCategory(bookId: string, name: string, budget: number, 
 }
 
 export async function updateCategory(budgetBookId: string, categoryId: string, updated: { name: string; budget: number, endDate?: Date | null }) {
+    validateName(updated.name);
+    validateBudget(updated.budget);
   await updateDoc(doc(db, 'budgetBooks', budgetBookId, 'categories', categoryId), {
       name: updated.name,
       budget: updated.budget,
