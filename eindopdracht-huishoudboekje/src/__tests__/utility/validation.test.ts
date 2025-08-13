@@ -50,11 +50,11 @@ describe('validate name', () => {
 
 describe('validate budget', () => {
   test('throws error if budget is not a number', () => {
-    expect(() => validateBudget('abc')).toThrow('Limiet moet een positief getal zijn');
+    expect(() => validateBudget('abc')).toThrow('Er moet een positief getal zijn voor budget');
   });
 
   test('throws error if budget is negative', () => {
-    expect(() => validateBudget(-100)).toThrow('Limiet moet een positief getal zijn');
+    expect(() => validateBudget(-100)).toThrow('Er moet een positief getal zijn voor budget');
   });
 
   test('does not throw if budget is zero or positive', () => {

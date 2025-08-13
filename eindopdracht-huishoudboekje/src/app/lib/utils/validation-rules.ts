@@ -23,6 +23,6 @@ export function validateName(name: string | undefined) {
 export function validateBudget(budget: string | number) {
   const budgetValue = Number(budget);
   if (isNaN(budgetValue) || budgetValue < 0) {
-    throw new Error('Limiet moet een positief getal zijn');
+    throw new Error('Er moet een positief getal zijn voor budget');
   }
 }
