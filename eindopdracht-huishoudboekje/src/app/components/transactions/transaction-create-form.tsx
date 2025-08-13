@@ -1,13 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { addTransactions } from '@/app/lib/actions/transactions-actions';
 import TransactionRow from './transaction-row';
 import { useRouter } from 'next/navigation';
 import { validateTransactions } from '@/app/lib/utils/validation-rules';
-import { Category } from '@/app/lib/definitions';
-import { listenCategories } from '@/app/lib/listeners/category-listener';
 import ErrorMessage from '../error';
+import { useCategories } from '@/app/lib/hooks/useCategories';
 
 const MAX_ROWS = 10;
 
@@ -17,12 +16,7 @@ export default function TransactionForm({ budgetBookId }: { budgetBookId: string
     { amount: '', type: 'uitgave', date: new Date(), categoryId: '' },
   ]);
   const [error, setError] = useState('');
-  const [categories, setCategories] = useState<Category[]>([]);
-
-  useEffect(() => {
-    const unsubscribe = listenCategories(setCategories, budgetBookId);
-    return () => unsubscribe();
-  }, [budgetBookId]);
+  const categories = useCategories(budgetBookId);
 
   const handleAddRow = () => {
     if (transactions.length >= MAX_ROWS) {

@@ -13,7 +13,7 @@ import {
 } from 'recharts';
 import type { Transaction } from '@/app/lib/definitions';
 import { groupByDay } from '../lib/utils/chart-utils';
-import { currencyFormatter } from '../lib/utils/number-utility';
+import { currencyFormatter } from '../lib/utils/number-utils';
 
 export function DailyBalanceChart({transactions, selectedMonth,}: {  transactions: Transaction[], selectedMonth: number}) {
   const data = groupByDay(transactions, selectedMonth);

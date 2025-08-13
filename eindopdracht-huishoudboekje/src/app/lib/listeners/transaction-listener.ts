@@ -4,7 +4,6 @@ import { Transaction } from "../definitions";
 
 export function listenTransactions(listener: any, budgetBookId: any, month: any): Unsubscribe {
     const transactionCollection = collection(db, 'budgetBooks', budgetBookId, 'transactions');
-
     const year = new Date().getFullYear();
     const start = new Date(year, month, 1);
     const end = new Date(year, month + 1, 1);

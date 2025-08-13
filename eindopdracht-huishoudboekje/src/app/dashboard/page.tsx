@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState } from 'react';
+import { Suspense } from 'react';
 import Link from 'next/link';
 
 import { BudgetBookTable } from '../components/budgetbook-table';
@@ -9,42 +9,32 @@ import { MonthSelector } from '../components/month-selector';
 import { TransactionStats } from '../components/transactions/transaction-stats';
 import { TransactionList } from '../components/transactions/transaction.list';
 import { TransactionListSkeleton, TransactionStatsSkeleton } from '../components/skeletons';
-import { paginate } from '../lib/utils/pagination';
 import { CategoryOverview } from '../components/category/category-overview';
 import { CategoryExpensesChart } from '../components/bar-chart';
 import { DailyBalanceChart } from '../components/line-chart';
 import { SearchInput } from '../components/search';
-import { useDashboardData } from '../lib/hooks/useDashboardData';
+import { usePagination } from '../lib/hooks/usePagination';
+import { useSearch } from '../lib/hooks/useSearch';
+import { sortTransactionsByDate } from '../lib/utils/sort-utils';
+import { useCategories } from '../lib/hooks/useCategories';
+import { useTransactions } from '../lib/hooks/useTransactions';
+import { useBudgetBooks } from '../lib/hooks/useBudgetBooks';
+import { useSelectedMonth } from '../lib/hooks/useSelectedMonth';
+import { useSelectedBook } from '../lib/hooks/useSelectedBook';
+import { useUser } from '../lib/hooks/useUser';
 
 export default function DashboardPage() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState('');
-  const {
-    userId,
-    budgetBooks,
-    selectedBook,
-    setSelectedBook,
-    transactions,
-    categories,
-    selectedMonth,
-    setSelectedMonth,
-  } = useDashboardData(false);
-  const ITEMS_PER_PAGE = 5;
+  const userId = useUser();
+  const budgetBooks = useBudgetBooks(false, userId);
+  const { selectedBook, setSelectedBook } = useSelectedBook(budgetBooks);
+  const { selectedMonth, setSelectedMonth } = useSelectedMonth();
+  const transactions = useTransactions(selectedBook?.id || null, selectedMonth);
+  const categories = useCategories(selectedBook?.id || null);
+  
+  const {setSearchQuery, filteredItems} = useSearch(budgetBooks, (book, query) => book.name.toLowerCase().includes(query.toLowerCase()));
+  const {paginatedItems,currentPage,totalPages,setCurrentPage} = usePagination(filteredItems, 5);
 
-
-  const filteredBooks = budgetBooks.filter((book) =>
-    book.name.toLowerCase().includes(searchQuery)
-  );
-
-  const { paginatedItems: paginatedBooks, totalPages } = paginate(
-    filteredBooks,
-    currentPage,
-    ITEMS_PER_PAGE
-  );
-
-  const sortedTransactions = [...transactions].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-  );
+  const sortedTransactions = sortTransactionsByDate(transactions);
 
   return (
     <div className="overflow-x-auto flex items-center justify-center min-h-screen bg-gray-50">
@@ -53,7 +43,7 @@ export default function DashboardPage() {
         <div className="flex items-center justify-between">
           <SearchInput
             placeholder="Zoek in huishoudboekjes..."
-            onSearch={(value) => {setSearchQuery(value.trim().toLowerCase());}}
+            onSearch={setSearchQuery}
           />
           <Link
             href="/dashboard/create"
@@ -65,7 +55,7 @@ export default function DashboardPage() {
 
         <BudgetBookTable
           currentUser={userId}
-          budgetBooks={paginatedBooks}
+          budgetBooks={paginatedItems}
           isArchived={false}
           onSelectBook={setSelectedBook}
           selectedBook={selectedBook}
@@ -113,17 +103,15 @@ export default function DashboardPage() {
                   <p className="text-center text-gray-400 italic mt-6">Geen transacties gevonden.</p>
                 )}
                 {transactions.length > 0 && (
-                  <>
-                    <Suspense fallback={<TransactionListSkeleton />}>
-                      <TransactionList
-                        ownerId={selectedBook.ownerId}
-                        currentUser={userId}
-                        transactions={transactions}
-                        budgetBookId={selectedBook.id}
-                        categories={categories}
-                      />
-                    </Suspense>
-                  </>
+                  <Suspense fallback={<TransactionListSkeleton />}>
+                    <TransactionList
+                      ownerId={selectedBook.ownerId}
+                      currentUser={userId}
+                      transactions={transactions}
+                      budgetBookId={selectedBook.id}
+                      categories={categories}
+                    />
+                  </Suspense>
                 )}
               </div>
 
@@ -135,6 +123,7 @@ export default function DashboardPage() {
                 transactions={transactions}
               />
             </div>
+
             {transactions.length > 0 && (
               <div className="mt-10 grid md:grid-cols-2 gap-6">
                 <DailyBalanceChart transactions={transactions} selectedMonth={selectedMonth} />

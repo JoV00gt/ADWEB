@@ -1,5 +1,5 @@
 import type { Transaction } from '@/app/lib/definitions';
-import { getTotalExpenses, getTotalIncome } from '@/app/lib/utils/number-utility';
+import { getTotalExpenses, getTotalIncome } from '@/app/lib/utils/number-utils';
 
 
 export function TransactionStats({ transactions }: { transactions: Transaction[] }) {

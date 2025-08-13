@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+
 export default function MultiSelect({options, selectedValues, onChange, name = 'participantIds', label = 'Selecteer deelnemers',}: {
   options: { label: string; value: string }[];
   selectedValues: string[];

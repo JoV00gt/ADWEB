@@ -6,7 +6,7 @@ import {
 } from 'recharts';
 import type { Category, Transaction } from '@/app/lib/definitions';
 import { calculateExpensesPerCategory } from '../lib/utils/chart-utils';
-import { currencyFormatter } from '../lib/utils/number-utility';
+import { currencyFormatter } from '../lib/utils/number-utils';
 
 export function CategoryExpensesChart({ categories, transactions }: {categories: Category[], transactions: Transaction[]}) {
   const data = calculateExpensesPerCategory(categories, transactions);

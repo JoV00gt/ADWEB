@@ -2,24 +2,27 @@
 
 import { BudgetBookTable } from '../components/budgetbook-table';
 import { Pagination } from '../components/pagination';
-import { useState } from 'react';
-import { paginate } from '../lib/utils/pagination';
-import { useArchivedBudgetBooks } from '../lib/hooks/useArchivedBooks';
 import { Spinner } from '../components/spinner';
 import { SearchInput } from '../components/search';
-
+import { useArchivedBudgetBooks } from '../lib/hooks/useArchivedBooks';
+import { useSearch } from '../lib/hooks/useSearch';
+import { usePagination } from '../lib/hooks/usePagination';
 
 export default function AcrhivePage() {
-  const [currentPage, setCurrentPage] = useState(1);
   const { budgetBooks, userId, loading } = useArchivedBudgetBooks();
-  const [searchQuery, setSearchQuery] = useState('');
-  const ITEMS_PER_PAGE = 5;
 
-  const filteredBooks = budgetBooks.filter((book) => book.name.toLowerCase().includes(searchQuery.toLowerCase()));
-  const { paginatedItems: paginatedBooks, totalPages } = paginate(filteredBooks, currentPage, ITEMS_PER_PAGE);
+  const { setSearchQuery, filteredItems } = useSearch(
+    budgetBooks,
+    (book, query) => book.name.toLowerCase().includes(query.toLowerCase())
+  );
 
-  if(loading) {
-    return ( <Spinner/>)
+  const { currentPage, setCurrentPage, paginatedItems, totalPages } = usePagination(
+    filteredItems,
+    5
+  );
+
+  if (loading) {
+    return <Spinner />;
   }
 
   return (
@@ -27,13 +30,21 @@ export default function AcrhivePage() {
       <div className="max-w-4xl w-full p-4 bg-white shadow rounded-lg">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-2xl font-semibold">Huishoudboekjes Archief</h1>
-          <SearchInput placeholder="Zoek in archief..." onSearch={(value) => {setSearchQuery(value.trim().toLowerCase())}} />
+          <SearchInput
+            placeholder="Zoek in archief..."
+            onSearch={(value) => setSearchQuery(value.trim().toLowerCase())}
+          />
         </div>
-        <BudgetBookTable currentUser={userId} budgetBooks={paginatedBooks} isArchived={true} />
+        <BudgetBookTable
+          currentUser={userId}
+          budgetBooks={paginatedItems}
+          isArchived={true}
+        />
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
-          onPageChange={setCurrentPage}/>
+          onPageChange={setCurrentPage}
+        />
       </div>
     </div>
   );

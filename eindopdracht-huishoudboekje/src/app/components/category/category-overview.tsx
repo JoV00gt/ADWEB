@@ -1,8 +1,6 @@
 'use client';
 
 import { Category, Transaction } from '@/app/lib/definitions';
-import { calculateCategoryUsage } from '@/app/lib/utils/category-utils';
-import { paginate } from '@/app/lib/utils/pagination';
 import clsx from 'clsx';
 import { useState } from 'react';
 import { Pagination } from '../pagination';
@@ -10,6 +8,8 @@ import Link from 'next/link';
 import { deleteCategory } from '@/app/lib/actions/category-actions';
 import { ConfirmDeleteModal } from '../confirm-delete-modal';
 import ErrorMessage from '../error';
+import { usePagination } from '@/app/lib/hooks/usePagination';
+import { useCategoryUsages } from '@/app/lib/hooks/useCategoryUsages';
 
 export function CategoryOverview({
   categories,
@@ -24,17 +24,11 @@ export function CategoryOverview({
   currentUser: string | null;
   ownerId: string;
 }) {
-  const ITEMS_PER_PAGE = 5;
-  const [currentPage, setCurrentPage] = useState(1);
+  const {currentPage, setCurrentPage, paginatedItems, totalPages,} = usePagination(categories, 5);
+  const categoriesWithUsage = useCategoryUsages(paginatedItems, transactions);
   const [error, setError] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
-
-  const { paginatedItems: paginatedCategories, totalPages } = paginate(
-    categories,
-    currentPage,
-    ITEMS_PER_PAGE
-  );
 
   const handleDeleteClick = (category: Category) => {
     setCategoryToDelete(category);
@@ -63,18 +57,8 @@ export function CategoryOverview({
       ) : (
         <>
           <div className="space-y-4">
-            {paginatedCategories.map((category) => {
-              const {
-                available,
-                percentageUsed,
-                isOver,
-                isWarning,
-              } = calculateCategoryUsage(
-                category.id,
-                Number(category.budget),
-                transactions,
-                category.endDate
-              );
+            {categoriesWithUsage.map(({ category, usage }) => {
+              const { available, percentageUsed, isOver, isWarning } = usage;
 
               return (
                 <div key={category.id} className="space-y-1">
@@ -126,7 +110,7 @@ export function CategoryOverview({
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
-              onPageChange={(page) => setCurrentPage(page)}
+              onPageChange={setCurrentPage}
             />
           )}
         </>

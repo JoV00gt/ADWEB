@@ -1,17 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import TransactionRow from './transaction-row';
 import { updateTransaction } from '@/app/lib/actions/transactions-actions';
 import { validateTransactions } from '@/app/lib/utils/validation-rules';
-import { listenCategories } from '@/app/lib/listeners/category-listener';
-import { Category } from '@/app/lib/definitions';
 import ErrorMessage from '../error';
+import { useCategories } from '@/app/lib/hooks/useCategories';
 
 export default function EditTransactionForm({budgetBookId, transaction}: {budgetBookId: string, transaction: any}) {
   const router = useRouter();
-  const [categories, setCategories] = useState<Category[]>([]);
+  const categories = useCategories(budgetBookId);
   const [tx, setTx] = useState({
     amount: transaction.amount.toString(),
     type: transaction.type,
@@ -23,11 +22,6 @@ export default function EditTransactionForm({budgetBookId, transaction}: {budget
   const handleChange = (index: number, field: 'amount' | 'type' | 'date' | 'categoryId', value: string) => {
     setTx(prev => ({ ...prev, [field]: value }));
   };
-
-  useEffect(() => {
-    const unsubscribe = listenCategories(setCategories, budgetBookId);
-    return () => unsubscribe();
-  }, [budgetBookId]);
 
   const handleSubmit = async () => {
     setError('');

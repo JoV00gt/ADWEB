@@ -1,4 +1,4 @@
-import { currencyFormatter, getTotalExpenses, getTotalIncome } from "@/app/lib/utils/number-utility";
+import { currencyFormatter, getTotalExpenses, getTotalIncome } from "@/app/lib/utils/number-utils";
 
 
 const mockTransactions = [

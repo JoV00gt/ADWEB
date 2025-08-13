@@ -2,31 +2,17 @@
 
 import { useEffect, useState } from 'react';
 import { updateBudgetBook } from '../lib/actions/budgetbook-actions';
-import { getUserId } from '../lib/actions/auth-actions';
-import { listenToUsers } from '../lib/listeners/user-listener';
-import type { BudgetBook, User } from '../lib/definitions';
+import type { BudgetBook } from '../lib/definitions';
 import MultiSelect from './select';
+import { useParticipants } from '@/app/lib/hooks/useParticipants';
 
 export default function EditBudgetBookForm({ book }: { book: BudgetBook }) {
-  const [users, setUsers] = useState<User[]>([]);
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-  const [selectedUserIds, setSelectedUserIds] = useState<string[]>(book.participants || []);
+  const {filteredUsers, selectedUserIds, setSelectedUserIds } = useParticipants();
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchUserId() {
-      const id = await getUserId();
-      setCurrentUserId(id);
-    }
-    fetchUserId();
-
-    const unsubscribe = listenToUsers(setUsers);
-    return () => unsubscribe();
+    setSelectedUserIds(book.participants || []);
   }, []);
-
-  const filteredUsers = currentUserId 
-    ? users.filter(user => user.id !== currentUserId) 
-    : users;
 
   const handleSubmit = async (formData: FormData) => {
     try {
@@ -39,15 +25,20 @@ export default function EditBudgetBookForm({ book }: { book: BudgetBook }) {
   };
 
   return (
-    <form onSubmit={(e) => {
-      e.preventDefault();
-      const formData = new FormData(e.currentTarget);
-      handleSubmit(formData);
-    }} className="space-y-4 max-w-md mx-auto">
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        handleSubmit(formData);
+      }}
+      className="space-y-4 max-w-md mx-auto"
+    >
       {error && <p className="text-red-600">{error}</p>}
 
       <div>
-        <label htmlFor="name" className="block font-medium">Naam</label>
+        <label htmlFor="name" className="block font-medium">
+          Naam
+        </label>
         <input
           type="text"
           name="name"
@@ -59,7 +50,9 @@ export default function EditBudgetBookForm({ book }: { book: BudgetBook }) {
       </div>
 
       <div>
-        <label htmlFor="description" className="block font-medium">Beschrijving</label>
+        <label htmlFor="description" className="block font-medium">
+          Beschrijving
+        </label>
         <textarea
           name="description"
           id="description"
