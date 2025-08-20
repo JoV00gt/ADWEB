@@ -76,6 +76,12 @@ describe('TransactionForm', () => {
     await userEvent.type(amountInput, '123.45');
     expect(amountInput).toHaveValue(123.45);
 
+    const dateInput = screen.getByDisplayValue("2025-08-20") as HTMLInputElement;
+    
+    const newDateString = '2025-08-15';
+    await userEvent.clear(dateInput);
+    await userEvent.type(dateInput, newDateString);
+
     const selects = container.querySelectorAll('select');
     const typeSelect = selects[0];
     const categorySelect = selects[1];

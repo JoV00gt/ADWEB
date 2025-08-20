@@ -40,6 +40,7 @@ export default function TransactionRow({
       <input
         type="date"
         className="border p-2 rounded w-1/3"
+        data-testid={`date-input-${index}`}
         value={formatDate(transaction.date)}
         onChange={e => onChange(index, 'date', e.target.value)}
         required
