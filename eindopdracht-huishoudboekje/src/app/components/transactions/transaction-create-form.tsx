@@ -30,13 +30,25 @@ export default function TransactionForm({ budgetBookId }: { budgetBookId: string
     ]);
   };
 
-  const handleInputChange = (index: number, field: 'amount' | 'type' | 'date' | 'categoryId', value: string) => {
-    setError('');
-    setTransactions(prev => {
-      const updated = [...prev];
+  const handleInputChange = (
+    index: number,
+    field: 'amount' | 'type' | 'date' | 'categoryId',
+    value: string
+  ) => {
+  setError('');
+  setTransactions(prev => {
+    const updated = [...prev];
+
+    if (field === 'date') {
+      updated[index] = { ...updated[index], date: new Date(value) };
+    } else if (field === 'amount') {
+      updated[index] = { ...updated[index], amount: value };
+    } else {
       updated[index] = { ...updated[index], [field]: value };
-      return updated;
-    });
+    }
+
+    return updated;
+  });
   };
 
   const handleDeleteRow = (index: number) => {
