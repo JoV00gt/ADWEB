@@ -41,8 +41,6 @@ export default function TransactionForm({ budgetBookId }: { budgetBookId: string
 
     if (field === 'date') {
       updated[index] = { ...updated[index], date: new Date(value) };
-    } else if (field === 'amount') {
-      updated[index] = { ...updated[index], amount: value };
     } else {
       updated[index] = { ...updated[index], [field]: value };
     }
