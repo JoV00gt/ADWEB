@@ -5,6 +5,7 @@ import * as categoryListener from '@/app/lib/listeners/category-listener';
 import * as validationRules from '@/app/lib/utils/validation-rules';
 import { useRouter } from 'next/navigation';
 import TransactionForm from '@/app/components/transactions/transaction-create-form';
+import { format } from 'date-fns';
 
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
@@ -76,7 +77,10 @@ describe('TransactionForm', () => {
     await userEvent.type(amountInput, '123.45');
     expect(amountInput).toHaveValue(123.45);
 
-    const dateInput = screen.getByDisplayValue("2025-08-20") as HTMLInputElement;
+  const today = new Date();
+  const todayString = format(today, 'yyyy-MM-dd');
+
+  const dateInput = screen.getByDisplayValue(todayString) as HTMLInputElement;
     
     const newDateString = '2025-08-15';
     await userEvent.clear(dateInput);

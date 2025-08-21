@@ -2,8 +2,8 @@ import BudgetBookEditClient from '@/app/components/budgetbook-edit-client';
 import { getBudgetBookById } from '@/app/lib/actions/budgetbook-actions';
 import { notFound } from 'next/navigation';
 
-export default async function Page({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const book = await getBudgetBookById(id);
 
   if (!book) notFound();
