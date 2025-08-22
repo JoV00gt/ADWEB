@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { ConfirmDeleteModal } from '../confirm-delete-modal';
 import { Pagination } from '../pagination';
-import { paginate } from '@/app/lib/utils/pagination';
 import ErrorMessage from '../error';
 import { usePagination } from '@/app/lib/hooks/usePagination';
 
@@ -55,7 +54,7 @@ export function TransactionList({
           return (
             <li
               key={id}
-              className="flex justify-between items-center border-b pb-2 flex-wrap sm:flex-nowrap gap-y-2"
+              className="grid grid-cols-3 items-center border-b pb-2 gap-4"
             >
               <div>
                 <p className="text-sm text-gray-800">{tx.date.toLocaleDateString()}</p>
